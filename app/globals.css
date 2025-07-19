@@ -24,3 +24,8 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+
+.font-shadows-into-light {
+  font-family: var(--font-shadows-into-light);
+}
