@@ -36,7 +36,7 @@ export default function SpotDetailsPanel({
             onClick={handleAdd}
             className={`mt-auto w-full px-4 py-2 rounded text-sm border transition-all duration-200
               ${clicked ? "font-bold" : "font-medium"}
-              hover:outline hover:outline-2 hover:outline-[#6c584c]
+              hover:outline hover:outline-[#6c584c]
               cursor-pointer bg-[#6c584c] text-[#f0ead2]`}
           >
             Add

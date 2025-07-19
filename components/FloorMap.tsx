@@ -73,13 +73,13 @@ export default function FloorMap({
         <polygon points="516.3,331.03 516.3,394.57 405.81,394.57 405.81,331.03 347.63,331.03 347.63,394.57 347.63,455.47 347.63,516.37 619.02,516.37 619.02,479.74 619.02,456.79 619.02,418.97 619.02,394.57 619.02,331.03" fill="#c2c1c0" />
 
         {/* green clickable spots */}
-        {renderSpot('CorridorB100C1', 'M287 526.75h118.81v33.63H287z')}
-        {renderSpot('CorridorB100C2', 'M643.27 526.46h154.02v33.92H643.27z')}
-        {renderSpot('CorridorA100C3', 'M181.67 188.27h115.91v21.74H181.67z')}
-        {renderSpot('CorridorA100C2', 'M306.4 178.39h389.03v31.9H306.4z')}
-        {renderSpot('CorridorA100C5', 'M700.91 178.39h95.08v31.9h-95.08z')}
-        {renderSpot('AtriumA100', 'M414.75 331.03h92.98v55.89h-92.98z')}
-        {renderSpot('CorridorA100C1', 'M274.69 301.26H390.6v22.79H274.69z')}
+        {renderSpot('CorridorB100C1', 'M287 526.75h118.81v33.63H287z','OptionalThirdArgument')}
+        {renderSpot('CorridorB100C2', 'M643.27 526.46h154.02v33.92H643.27z','OptionalThirdArgument')}
+        {renderSpot('CorridorA100C3', 'M181.67 188.27h115.91v21.74H181.67z','OptionalThirdArgument')}
+        {renderSpot('CorridorA100C2', 'M306.4 178.39h389.03v31.9H306.4z','OptionalThirdArgument')}
+        {renderSpot('CorridorA100C5', 'M700.91 178.39h95.08v31.9h-95.08z','OptionalThirdArgument')}
+        {renderSpot('AtriumA100', 'M414.75 331.03h92.98v55.89h-92.98z','OptionalThirdArgument')}
+        {renderSpot('CorridorA100C1', 'M274.69 301.26H390.6v22.79H274.69z','OptionalThirdArgument')}
       </motion.svg>
     </div>
   );
