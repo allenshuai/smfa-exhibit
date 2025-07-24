@@ -1,12 +1,11 @@
 // components/InfoHeader.tsx
 import Image from "next/image";
-import { FaMapMarkerAlt, FaPlusCircle, FaInbox, FaCheckCircle } from "react-icons/fa";
 
 export default function InfoHeader() {
   return (
     <div className="absolute inset-0 pointer-events-none">
       {/* Top Right: Steps Only */}
-      <div className="absolute top-6 right-6 text-sm text-right leading-tight max-w-xs pointer-events-auto text-[#6c584c] space-y-2">
+      {/* <div className="absolute top-6 right-6 text-sm text-right leading-tight max-w-xs pointer-events-auto text-[#6c584c] space-y-2">
         <div className="flex items-start gap-2 justify-end">
           <FaMapMarkerAlt className="text-orange-500" />
           <span>1) <strong>Find</strong> the available green spots</span>
@@ -23,7 +22,7 @@ export default function InfoHeader() {
           <FaCheckCircle className="text-green-600" />
           <span>4) <strong>Submit</strong> to be reviewed</span>
         </div>
-      </div>
+      </div> */}
 
       {/* Bottom Left: Divider Line + Logo + Contact Info */}
       <div className="absolute bottom-6 left-6 text-sm text-[#6c584c]">

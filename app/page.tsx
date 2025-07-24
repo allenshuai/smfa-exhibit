@@ -25,13 +25,13 @@ export default function Home() {
     >
       <InfoHeader />
 
-      <div className="absolute inset-0 flex justify-center items-center h-[450px] top-1/2 -translate-y-1/2">
+      <div className="absolute inset-0 flex justify-center items-center h-[450px] top-[45%] -translate-y-1/2">
         {!showRequestForm ? (
           // ✅ Default View: Floor Map + Panels
-          <div className="flex items-start gap-6 h-[400px]">
+          <div className="flex items-start gap-6 h-[500px]">
             <BuildingFloorMenu selected={selected} setSelected={setSelected} />
 
-            <div className="w-[60vw] max-w-[650px] h-full">
+            <div className="w-[60vw] max-w-[700px] h-full">
               <FloorMap
                 selectedLocations={selectedLocations}
                 setSelectedLocations={setSelectedLocations}
@@ -40,12 +40,13 @@ export default function Home() {
               />
             </div>
 
-            <div className="flex flex-col w-[320px] h-full gap-4">
+            <div className="flex flex-col w-[350px] h-full gap-4">
               <div className="flex-1">
                 <SpotDetailsPanel
                   latestSpot={latestSpot}
                   selectedLocations={selectedLocations}
                   setSelectedLocations={setSelectedLocations}
+                  setLatestSpot={setLatestSpot}
                 />
               </div>
               <div className="flex-1">

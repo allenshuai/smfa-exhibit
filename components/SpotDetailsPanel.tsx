@@ -1,15 +1,26 @@
 import React, { useState } from "react";
+// import { X } from "lucide-react"; // Make sure you have lucide-react installed
+import {
+  X,
+  MapPin,
+  CirclePlus,
+  Inbox,
+  CheckCircle,
+} from 'lucide-react';
+
 
 interface SpotDetailsPanelProps {
   latestSpot: string | undefined;
   selectedLocations: string[];
   setSelectedLocations: (val: string[]) => void;
+  setLatestSpot: (val: string | undefined) => void;
 }
 
 export default function SpotDetailsPanel({
   latestSpot,
   selectedLocations,
   setSelectedLocations,
+  setLatestSpot,
 }: SpotDetailsPanelProps) {
   const [clicked, setClicked] = useState(false);
 
@@ -24,9 +35,23 @@ export default function SpotDetailsPanel({
     setTimeout(() => setClicked(false), 200); // quick reset
   };
 
+  const handleClose = () => {
+    setLatestSpot(undefined);
+  };
+
   return (
-    <div className="h-full flex flex-col border border-[#6c584c] px-3 py-3 rounded text-[#6c584c]">
-      <h2 className="text-lg font-semibold mb-2">Spot Details</h2>
+    <div className="relative h-full flex flex-col border border-[#6c584c] px-3 py-3 rounded text-[#6c584c]">
+      {/* Close icon */}
+      {latestSpot && (
+        <button
+          onClick={handleClose}
+          className="absolute top-2 right-2 text-[#6c584c] hover:text-[#4b463d]"
+        >
+          <X size={18} />
+        </button>
+      )}
+
+      <h2 className="text-lg font-semibold mb-2">Details & Availability</h2>
       {latestSpot ? (
         <>
           <p className="text-sm mb-4">
@@ -43,9 +68,35 @@ export default function SpotDetailsPanel({
           </button>
         </>
       ) : (
-        <p className="text-sm text-gray-200 mt-auto">
-          Click a green spot to see details.
-        </p>
+        <div className="text-sm text-gray-800 mt-auto space-y-2">
+          {/* <p>Click a green spot to see details.</p> */}
+          <div className="text-sm text-[#6c584c] space-y-2">
+            <div className="flex items-start gap-2">
+              <MapPin className="text-[#F26344]" size={16} />
+              <span>
+                1) <strong>Find</strong> the available green spots
+              </span>
+            </div>
+            <div className="flex items-start gap-2">
+              <CirclePlus className="text-[#1B80C4]" size={16} />
+              <span>
+                2) <strong>Add</strong> it to your cart
+              </span>
+            </div>
+            <div className="flex items-start gap-2">
+              <Inbox className="text-[#00B169]" size={16} />
+              <span>
+                3) <strong>Request</strong> up to 3 locations
+              </span>
+            </div>
+            <div className="flex items-start gap-2">
+              <CheckCircle className="text-[#F0609A]" size={16} />
+              <span>
+                4) <strong>Submit</strong> to be reviewed
+              </span>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
