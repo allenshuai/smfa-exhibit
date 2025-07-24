@@ -14,7 +14,7 @@ export default function SMFA_Level2({
   latestSpot,
 }: SMFA_Level2Props) {
   const dMap: Record<string, string> = {
-		CorridorA200C4: 'M241.38,215.95h30.71v94.88h-30.71Z',
+	CorridorA200C4: 'M241.38,215.95h30.71v94.88h-30.71Z',
     CorridorA200C3: 'M241.37,177.89h58.09v30.71h-58.09Z',
     CorridorA200C2: 'M306.87,177.89h124.27v30.71h-124.27Z',
     CorridorB200C1: 'M379.97,522.33h164.44v30.71h-164.44Z',

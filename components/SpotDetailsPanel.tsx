@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-// import { X } from "lucide-react"; // Make sure you have lucide-react installed
 import {
   X,
   MapPin,
   CirclePlus,
   Inbox,
   CheckCircle,
-} from 'lucide-react';
-
+} from "lucide-react";
+import { specialSpots } from "./specialSpots";
+import SpecialEventCard from "./SpecialEventCard";
 
 interface SpotDetailsPanelProps {
   latestSpot: string | undefined;
@@ -23,6 +23,7 @@ export default function SpotDetailsPanel({
   setLatestSpot,
 }: SpotDetailsPanelProps) {
   const [clicked, setClicked] = useState(false);
+  const specialCards = latestSpot ? specialSpots[latestSpot] ?? [] : [];
 
   const handleAdd = () => {
     if (!latestSpot || selectedLocations.includes(latestSpot)) return;
@@ -32,7 +33,7 @@ export default function SpotDetailsPanel({
     }
     setSelectedLocations([...selectedLocations, latestSpot]);
     setClicked(true);
-    setTimeout(() => setClicked(false), 200); // quick reset
+    setTimeout(() => setClicked(false), 200);
   };
 
   const handleClose = () => {
@@ -41,7 +42,7 @@ export default function SpotDetailsPanel({
 
   return (
     <div className="relative h-full flex flex-col border border-[#6c584c] px-3 py-3 rounded text-[#6c584c]">
-      {/* Close icon */}
+      {/* ❌ Close Button */}
       {latestSpot && (
         <button
           onClick={handleClose}
@@ -51,8 +52,25 @@ export default function SpotDetailsPanel({
         </button>
       )}
 
-      <h2 className="text-lg font-semibold mb-2">Details & Availability</h2>
-      {latestSpot ? (
+      {/* Header */}
+      <h2 className="text-lg font-bold mb-3">
+        {specialCards.length > 0 ? "Special Occasion ONLY" : "Details & Availability"}
+      </h2>
+
+      {/* 📌 Special Event Cards */}
+      {specialCards.length > 0 && (
+        <div className="mt-3 -mx-3 px-3 overflow-x-auto">
+          <div className="flex gap-3 w-max pr-2">
+            {specialCards.map((item, idx) => (
+              <SpecialEventCard key={idx} {...item} />
+            ))}
+          </div>
+        </div>
+      )}
+
+
+      {/* 🟢 Regular Spot */}
+      {latestSpot && specialCards.length === 0 && (
         <>
           <p className="text-sm mb-4">
             You selected <strong>{latestSpot}</strong>. More info
@@ -67,34 +85,34 @@ export default function SpotDetailsPanel({
             Add
           </button>
         </>
-      ) : (
-        <div className="text-sm text-gray-800 mt-auto space-y-2">
-          {/* <p>Click a green spot to see details.</p> */}
-          <div className="text-sm text-[#6c584c] space-y-2">
-            <div className="flex items-start gap-2">
-              <MapPin className="text-[#F26344]" size={16} />
-              <span>
-                1) <strong>Find</strong> the available green spots
-              </span>
-            </div>
-            <div className="flex items-start gap-2">
-              <CirclePlus className="text-[#1B80C4]" size={16} />
-              <span>
-                2) <strong>Add</strong> it to your cart
-              </span>
-            </div>
-            <div className="flex items-start gap-2">
-              <Inbox className="text-[#00B169]" size={16} />
-              <span>
-                3) <strong>Request</strong> up to 3 locations
-              </span>
-            </div>
-            <div className="flex items-start gap-2">
-              <CheckCircle className="text-[#F0609A]" size={16} />
-              <span>
-                4) <strong>Submit</strong> to be reviewed
-              </span>
-            </div>
+      )}
+
+      {/* 📝 Default Instructions */}
+      {!latestSpot && (
+        <div className="text-sm text-[#6c584c] space-y-2 mt-auto">
+          <div className="flex items-start gap-2">
+            <MapPin className="text-[#F26344]" size={16} />
+            <span>
+              1) <strong>Find</strong> the available green spots
+            </span>
+          </div>
+          <div className="flex items-start gap-2">
+            <CirclePlus className="text-[#1B80C4]" size={16} />
+            <span>
+              2) <strong>Add</strong> it to your cart
+            </span>
+          </div>
+          <div className="flex items-start gap-2">
+            <Inbox className="text-[#00B169]" size={16} />
+            <span>
+              3) <strong>Request</strong> up to 3 locations
+            </span>
+          </div>
+          <div className="flex items-start gap-2">
+            <CheckCircle className="text-[#F0609A]" size={16} />
+            <span>
+              4) <strong>Submit</strong> to be reviewed
+            </span>
           </div>
         </div>
       )}
