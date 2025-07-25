@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import React from 'react';
+import React from "react";
 
 
 interface MH_Level1Props {
@@ -9,7 +9,7 @@ interface MH_Level1Props {
     id: string,
     d: string,
     latestSpot: string | undefined
-  ) => JSX.Element;
+  ) => React.JSX.Element;
   latestSpot: string | undefined;
 }
 
