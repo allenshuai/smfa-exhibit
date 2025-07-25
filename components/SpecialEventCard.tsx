@@ -1,12 +1,5 @@
 import React from "react";
-
-interface SpecialEventCardProps {
-  type: "Exhibition" | "Reception";
-  title: string;
-  dateRange: string;
-  imageUrl: string;
-  readMoreUrl?: string;
-}
+import type { SpecialEventCardProps } from "./specialSpots"; // reuse the type
 
 export default function SpecialEventCard({
   type,
@@ -16,10 +9,10 @@ export default function SpecialEventCard({
   readMoreUrl,
 }: SpecialEventCardProps) {
   const isExhibition = type === "Exhibition";
-	const bgColor = isExhibition ? "#F26344" : "#F0609A";
-	const textColor = isExhibition ? "#ffd9d1" : "#ffd9f1";
-	const circleColor = isExhibition ? "#742f21" : "#5e284a";
-	const typeTextColor = isExhibition ? "#742f21" : "#5e284a";
+  const bgColor = isExhibition ? "#F26344" : "#F0609A";
+  const textColor = isExhibition ? "#ffd9d1" : "#ffd9f1";
+  const circleColor = isExhibition ? "#742f21" : "#5e284a";
+  const typeTextColor = isExhibition ? "#742f21" : "#5e284a";
 
   return (
     <div
@@ -27,12 +20,9 @@ export default function SpecialEventCard({
       style={{ backgroundColor: bgColor, color: textColor }}
     >
       <div className="text-xs flex items-center gap-2 mb-2" style={{ color: typeTextColor }}>
-				<div
-					className="w-4 h-4 rounded-full"
-					style={{ backgroundColor: circleColor }}
-				/>
-				<span className="font-bold">{type}</span>
-			</div>
+        <div className="w-4 h-4 rounded-full" style={{ backgroundColor: circleColor }} />
+        <span className="font-bold">{type}</span>
+      </div>
 
       <img
         src={imageUrl}

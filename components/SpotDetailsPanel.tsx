@@ -9,6 +9,7 @@ import {
 import { specialSpots } from "./specialSpots";
 import SpecialEventCard from "./SpecialEventCard";
 
+
 interface SpotDetailsPanelProps {
   latestSpot: string | undefined;
   selectedLocations: string[];
