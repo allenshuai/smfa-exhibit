@@ -9,19 +9,17 @@ const buildings = {
   "Mission Hill": ["Level 1", "Level 2"],
 };
 
+type Building = keyof typeof buildings;
+type Floor = string;
+
 export default function BuildingFloorMenu({
   selected,
   setSelected,
 }: {
-  selected: { building: "SMFA" | "Mission Hill"; floor: "Basement" | "Level 1" | "Level 2" | "Level 3" };
-  setSelected: React.Dispatch<
-    React.SetStateAction<{
-      building: "SMFA" | "Mission Hill";
-      floor: "Basement" | "Level 1" | "Level 2" | "Level 3";
-    }>
-  >;
+  selected: { building: Building; floor: Floor };
+  setSelected: (val: { building: Building; floor: Floor }) => void;
 }) {
-  const [hoveredBuilding, setHoveredBuilding] = useState<string | null>(null);
+  const [hoveredBuilding, setHoveredBuilding] = useState<Building | null>(null);
 
   return (
     <div className="text-sm font-medium text-[#6c584c] space-y-4 w-[180px] text-right relative z-10">
@@ -32,7 +30,7 @@ export default function BuildingFloorMenu({
         return (
           <div
             key={building}
-            onMouseEnter={() => setHoveredBuilding(building)}
+            onMouseEnter={() => setHoveredBuilding(building as Building)}
             onMouseLeave={() => setHoveredBuilding(null)}
             className="relative"
           >
@@ -51,7 +49,7 @@ export default function BuildingFloorMenu({
                   <li
                     key={floor}
                     onClick={() => {
-                      setSelected({ building: building as any, floor: floor as any });
+                      setSelected({ building: building as Building, floor });
                       setHoveredBuilding(null);
                     }}
                     className="cursor-pointer text-gray-600 hover:text-black text-right"
