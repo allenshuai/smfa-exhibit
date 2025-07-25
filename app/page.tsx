@@ -14,29 +14,32 @@ export default function Home() {
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
   const [showRequestForm, setShowRequestForm] = useState(false);
   const [selected, setSelected] = useState<{
-    building: "SMFA" | "Mission Hill";
-    floor: "Basement" | "Level 1" | "Level 2" | "Level 3";
+    building: "SMFA" | "Mission Hill" | "Barnum Hall" | "Lane Hall" | "Aidekman Arts Center";
+    floor: string;
   }>({
     building: "SMFA",
     floor: "Level 1",
   });
+  
   const [latestSpot, setLatestSpot] = useState<string | undefined>(undefined);
 
   const handleFloorChange = (direction: 'up' | 'down') => {
-    const availableFloors: ("Basement" | "Level 1" | "Level 2" | "Level 3")[] =
+    if (selected.building !== "SMFA" && selected.building !== "Mission Hill") return;
+  
+    const availableFloors: string[] =
       selected.building === "SMFA"
         ? ["Basement", "Level 1", "Level 2", "Level 3"]
         : ["Level 1", "Level 2"];
-
+  
     const currentIndex = availableFloors.indexOf(selected.floor);
     const newIndex = direction === 'up' ? currentIndex + 1 : currentIndex - 1;
-
     const newFloor = availableFloors[newIndex];
-
+  
     if (newFloor) {
       setSelected(prev => ({ ...prev, floor: newFloor }));
     }
   };
+  
 
   return (
     <motion.main
@@ -51,17 +54,24 @@ export default function Home() {
           <div className="flex items-start gap-6 h-[500px]">
             <BuildingFloorMenu selected={selected} setSelected={setSelected} />
 
-            <div className="w-[60vw] max-w-[700px] h-full">
-              <FloorMap
-                building={selected.building}
-                floor={selected.floor}
-                selectedLocations={selectedLocations}
-                setSelectedLocations={setSelectedLocations}
-                setLatestSpot={setLatestSpot}
-                latestSpot={latestSpot}
-                onFloorChange={handleFloorChange}
-              />
-            </div>
+            {(selected.building === "SMFA" || selected.building === "Mission Hill") ? (
+              <div className="w-[60vw] max-w-[700px] h-full">
+                <FloorMap
+                  building={selected.building}
+                  floor={selected.floor as "Basement" | "Level 1" | "Level 2" | "Level 3"}
+                  selectedLocations={selectedLocations}
+                  setSelectedLocations={setSelectedLocations}
+                  setLatestSpot={setLatestSpot}
+                  latestSpot={latestSpot}
+                  onFloorChange={handleFloorChange}
+                />
+              </div>
+            ) : (
+              <div className="w-[60vw] max-w-[700px] h-full flex items-center justify-center text-gray-400">
+                Floor map for {selected.building} coming soon.
+              </div>
+            )}
+
 
             <div className="flex flex-col w-[350px] h-full gap-4">
               <div className="flex-1">
