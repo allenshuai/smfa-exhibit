@@ -22,15 +22,13 @@ export default function Home() {
   });
   const [latestSpot, setLatestSpot] = useState<string | undefined>(undefined);
 
-  const floorOrder = ['Basement', 'Level 1', 'Level 2', 'Level 3'] as const;
-
   const handleFloorChange = (direction: 'up' | 'down') => {
-    const availableFloors = {
-      'SMFA': ['Basement', 'Level 1', 'Level 2', 'Level 3'],
-      'Mission Hill': ['Level 1', 'Level 2'],
-    }[selected.building];
+    const availableFloors: ("Basement" | "Level 1" | "Level 2" | "Level 3")[] =
+      selected.building === "SMFA"
+        ? ["Basement", "Level 1", "Level 2", "Level 3"]
+        : ["Level 1", "Level 2"];
 
-    const currentIndex = availableFloors.indexOf(selected.floor as Floor);
+    const currentIndex = availableFloors.indexOf(selected.floor);
     const newIndex = direction === 'up' ? currentIndex + 1 : currentIndex - 1;
 
     const newFloor = availableFloors[newIndex];

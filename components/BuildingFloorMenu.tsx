@@ -13,8 +13,13 @@ export default function BuildingFloorMenu({
   selected,
   setSelected,
 }: {
-  selected: { building: string; floor: string };
-  setSelected: (val: { building: string; floor: string }) => void;
+  selected: { building: "SMFA" | "Mission Hill"; floor: "Basement" | "Level 1" | "Level 2" | "Level 3" };
+  setSelected: React.Dispatch<
+    React.SetStateAction<{
+      building: "SMFA" | "Mission Hill";
+      floor: "Basement" | "Level 1" | "Level 2" | "Level 3";
+    }>
+  >;
 }) {
   const [hoveredBuilding, setHoveredBuilding] = useState<string | null>(null);
 
@@ -31,32 +36,22 @@ export default function BuildingFloorMenu({
             onMouseLeave={() => setHoveredBuilding(null)}
             className="relative"
           >
-            {/* Building Name */}
             <div
               className={`cursor-pointer uppercase truncate ${
                 isSelected ? "font-bold text-[#6c584c]" : "text-gray-500 hover:text-[#4e4439]"
               }`}
-              style={{ direction: "rtl" }} // this helps align text to the right while letting it grow left
-              
-              // back-up plan
-              // style={{
-              //   direction: "rtl",
-              //   whiteSpace: "nowrap",         // prevents wrapping
-              //   overflow: "visible",           //allow overflow
-              //   textOverflow: "clip",          // disables the "..."
-              // }}
+              style={{ direction: "rtl" }}
             >
               {isSelected ? `${building} | ${selected.floor}` : building}
             </div>
 
-            {/* Floor submenu (shown underneath) */}
             {isOpen && (
               <ul className="mt-2 space-y-1 border-r border-[#6c584c] pr-2">
                 {floors.map((floor) => (
                   <li
                     key={floor}
                     onClick={() => {
-                      setSelected({ building, floor });
+                      setSelected({ building: building as any, floor: floor as any });
                       setHoveredBuilding(null);
                     }}
                     className="cursor-pointer text-gray-600 hover:text-black text-right"
