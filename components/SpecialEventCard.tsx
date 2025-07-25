@@ -1,18 +1,22 @@
 import React from "react";
-import type { SpecialEventCardProps } from "./specialSpots"; // reuse the type
+import type { SpecialEventCardProps } from "../tufts-event-scrapper/specialSpots.generated";
+
+interface Props extends SpecialEventCardProps {
+  index: number;
+}
 
 export default function SpecialEventCard({
-  type,
+  index,
   title,
   dateRange,
   imageUrl,
   readMoreUrl,
-}: SpecialEventCardProps) {
-  const isExhibition = type === "Exhibition";
-  const bgColor = isExhibition ? "#F26344" : "#F0609A";
-  const textColor = isExhibition ? "#ffd9d1" : "#ffd9f1";
-  const circleColor = isExhibition ? "#742f21" : "#5e284a";
-  const typeTextColor = isExhibition ? "#742f21" : "#5e284a";
+}: Props) {
+  const isEven = index % 2 === 0;
+  const bgColor = isEven ? "#F26344" : "#F0609A";
+  const textColor = isEven ? "#ffd9d1" : "#ffd9f1";
+  const circleColor = isEven ? "#742f21" : "#5e284a";
+  const typeTextColor = isEven ? "#742f21" : "#5e284a";
 
   return (
     <div
@@ -21,7 +25,7 @@ export default function SpecialEventCard({
     >
       <div className="text-xs flex items-center gap-2 mb-2" style={{ color: typeTextColor }}>
         <div className="w-4 h-4 rounded-full" style={{ backgroundColor: circleColor }} />
-        <span className="font-bold">{type}</span>
+        <span className="font-bold">EVENTS</span>
       </div>
 
       <img

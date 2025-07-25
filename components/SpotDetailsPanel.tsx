@@ -6,7 +6,8 @@ import {
   Inbox,
   CheckCircle,
 } from "lucide-react";
-import { specialSpots } from "./specialSpots";
+import { specialSpots } from "../tufts-event-scrapper/specialSpots.generated";
+
 import SpecialEventCard from "./SpecialEventCard";
 
 
@@ -63,7 +64,7 @@ export default function SpotDetailsPanel({
         <div className="mt-3 -mx-3 px-3 overflow-x-auto">
           <div className="flex gap-3 w-max pr-2">
             {specialCards.map((item, idx) => (
-              <SpecialEventCard key={idx} {...item} />
+              <SpecialEventCard key={idx} {...item} index={idx} />
             ))}
           </div>
         </div>

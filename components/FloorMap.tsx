@@ -120,7 +120,7 @@ export default function FloorMap({
       <div className="relative w-full h-full">
         <AnimatePresence mode="popLayout">
           <motion.div
-            key={`${previousBuilding}-${previousFloor}`}
+            key={`prev-${previousBuilding}-${previousFloor}`}
             initial={
               isSameBuilding
                 ? false
