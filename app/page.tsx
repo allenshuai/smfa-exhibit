@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import FloorMap from "@/components/FloorMap";
+import WelcomePopup from '@/components/WelcomePopup';
 
 import RequestFormModal from "@/components/RequestFormModal";
 import InfoHeader from "@/components/InfoHeader";
@@ -46,6 +47,7 @@ export default function Home() {
       layout
       className="relative w-screen h-screen overflow-hidden bg-[#f0ead2]"
     >
+   <WelcomePopup />
       <InfoHeader />
 
       <div className="absolute inset-0 flex justify-center items-center h-[450px] top-[45%] -translate-y-1/2">
