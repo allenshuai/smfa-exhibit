@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useState } from "react";
 import { motion } from "framer-motion";
@@ -11,48 +11,45 @@ import BuildingFloorMenu from "@/components/BuildingFloorMenu";
 import SpotDetailsPanel from "@/components/SpotDetailsPanel";
 import SelectedLocationsPanel from "@/components/SelectedLocationsPanel";
 
+// Define building and floor types
+const buildingFloors = {
+  "SMFA": ["Basement", "Level 1", "Level 2", "Level 3"],
+  "Mission Hill": ["Level 1", "Level 2"],
+  "Barnum Hall": ["Level B", "Level 2"],
+  "Lane Hall": ["Level 1"],
+  "Aidekman Arts Center": ["Level 1"],
+} as const;
+
+type Building = keyof typeof buildingFloors;
+type Floor = (typeof buildingFloors)[Building][number];
+
 export default function Home() {
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
   const [showRequestForm, setShowRequestForm] = useState(false);
   const [selected, setSelected] = useState<{
-    building: "SMFA" | "Mission Hill" | "Barnum Hall" | "Lane Hall" | "Aidekman Arts Center";
-    floor: string;
+    building: Building;
+    floor: Floor;
   }>({
     building: "SMFA",
     floor: "Level 1",
   });
-  
+
   const [latestSpot, setLatestSpot] = useState<string | undefined>(undefined);
 
   const handleFloorChange = (direction: 'up' | 'down') => {
-    const buildingFloors: Record<string, string[]> = {
-      "SMFA": ["Basement", "Level 1", "Level 2", "Level 3"],
-      "Mission Hill": ["Level 1", "Level 2"],
-      "Barnum Hall": ["Level B", "Level 2"],
-      "Lane Hall": ["Level 1"],
-      "Aidekman Arts Center": ["Level 1"],
-    };
-
     const availableFloors = buildingFloors[selected.building];
     if (!availableFloors) return;
-  
-    const currentIndex = availableFloors.indexOf(selected.floor);
+
+    const currentIndex = (availableFloors as readonly string[]).indexOf(selected.floor);
     const newIndex = direction === 'up' ? currentIndex + 1 : currentIndex - 1;
     const newFloor = availableFloors[newIndex];
-  
+
     if (newFloor) {
       setSelected(prev => ({ ...prev, floor: newFloor }));
     }
   };
 
-  const hasMap = [
-    "SMFA",
-    "Mission Hill",
-    "Barnum Hall",
-    "Lane Hall",
-    "Aidekman Arts Center",
-  ].includes(selected.building);
-    
+  const hasMap = Object.keys(buildingFloors).includes(selected.building);
 
   return (
     <motion.main
@@ -72,7 +69,7 @@ export default function Home() {
               <div className="w-[60vw] max-w-[700px] h-full">
                 <FloorMap
                   building={selected.building}
-                  floor={selected.floor as any}
+                  floor={selected.floor}
                   selectedLocations={selectedLocations}
                   setSelectedLocations={setSelectedLocations}
                   setLatestSpot={setLatestSpot}
@@ -85,7 +82,6 @@ export default function Home() {
                 Floor map for {selected.building} coming soon.
               </div>
             )}
-
 
             <div className="flex flex-col w-[350px] h-full gap-4">
               <div className="flex-1">

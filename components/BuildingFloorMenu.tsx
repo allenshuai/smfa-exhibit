@@ -1,25 +1,30 @@
 "use client";
 import { useState } from "react";
 
+// Define building-floor mapping as const
 const buildings = {
   SMFA: ["Basement", "Level 1", "Level 2", "Level 3"],
   "Barnum Hall": ["Level B", "Level 2"],
   "Lane Hall": ["Level 1"],
   "Aidekman Arts Center": ["Level 1"],
   "Mission Hill": ["Level 1", "Level 2"],
-};
-
+} as const;
 
 type Building = keyof typeof buildings;
-type Floor = string;
+type Floor = (typeof buildings)[Building][number]; // union of all valid floor strings
+
+interface BuildingFloorMenuProps {
+  selected: {
+    building: Building;
+    floor: Floor;
+  };
+  setSelected: (val: { building: Building; floor: Floor }) => void;
+}
 
 export default function BuildingFloorMenu({
   selected,
   setSelected,
-}: {
-  selected: { building: Building; floor: Floor };
-  setSelected: (val: { building: Building; floor: Floor }) => void;
-}) {
+}: BuildingFloorMenuProps) {
   const [hoveredBuilding, setHoveredBuilding] = useState<Building | null>(null);
 
   return (
@@ -50,7 +55,7 @@ export default function BuildingFloorMenu({
                   <li
                     key={floor}
                     onClick={() => {
-                      setSelected({ building: building as Building, floor });
+                      setSelected({ building: building as Building, floor: floor as Floor });
                       setHoveredBuilding(null);
                     }}
                     className="cursor-pointer text-gray-600 hover:text-black text-right"
