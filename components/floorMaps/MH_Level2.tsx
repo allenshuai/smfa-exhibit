@@ -4,31 +4,62 @@ import { motion } from 'framer-motion';
 import React from "react";
 import { SpotType } from '../data/allSpots'; 
 
-interface MH_Level1Props {
+interface MH_Level2Props {
   renderSpot: (
-    id: string,
+	id: string,
     d: string,
-    latestSpot: string | undefined
+    type: SpotType,
+    latestSpot: string | undefined,
+    title?: string
   ) => React.JSX.Element;
   latestSpot: string | undefined;
 }
 
-export default function MH_Level1({
+export default function MH_Level2({
   renderSpot,
   latestSpot,
-}: MH_Level1Props) {
-  const dMap: Record<string, string> = {
-    C208: 'M774.04 586.75L774.04 466.57L923.58 466.57L940.54 586.81L774.04 586.75Z',
-    C200C3: 'M609.95 272.91h28.24v109.48h-28.24z',
-    C200C4: 'M609.95 386.83h28.24v91.14h-28.24z',
-    C200C5: 'M609.95 483.43h28.24v102.93h-28.24z',
-	C200C6: 'M319.06 591.51h621.98v28.09h-621.98z',
-    C200C7:
-      'M300.76,150.85v181.52h-75.36l-19.92,338.02l43.16-.3v-50.5h68.81V149.13l-16.69,1.72ZM300.39,608.76h-59.01v-251.73h59.01v251.73Z',
-    C200C2:
-      'M638.2 253.33L638.2 226.24L638.2 220.85L638.2 210.91L320.74 210.91L320.74 226.24L609.95 226.24L609.95 270.56L621.85 270.56L638.2 270.56L833.62 270.56L833.62 253.33L638.2 253.33Z',
-    C200C1:
-      'M944.88 586.66L944.88 619.59L984.07 619.59L927.89 210.91L836.15 211.15L836.15 270.56L885.84 270.56L885.84 327.14L925.84 327.14L925.84 452.97L944.88 586.66Z',
+}: MH_Level2Props) {
+	const dMap: Record<string, { d: string; type: SpotType; title?: string }> = {
+		C208: {
+			d: 'M774.04 586.75L774.04 466.57L923.58 466.57L940.54 586.81L774.04 586.75Z',
+			type: 'green',
+			title: 'C208',
+		},
+		C200C3: {
+			d: 'M609.95 272.91h28.24v109.48h-28.24z',
+			type: 'green',
+			title: 'C200C3',
+		},
+		C200C4: {
+			d: 'M609.95 386.83h28.24v91.14h-28.24z',
+			type: 'green',
+			title: 'C200C4',
+		},
+		C200C5: {
+			d: 'M609.95 483.43h28.24v102.93h-28.24z',
+			type: 'green',
+			title: 'C200C5',
+		},
+		C200C6: {
+			d: 'M319.06 591.51h621.98v28.09h-621.98z',
+			type: 'green',
+			title: 'C200C6',
+		},
+		C200C7: {
+			d: 'M300.76,150.85v181.52h-75.36l-19.92,338.02l43.16-.3v-50.5h68.81V149.13l-16.69,1.72ZM300.39,608.76h-59.01v-251.73h59.01v251.73Z',
+			type: 'green',
+			title: 'C200C7',
+		},
+		C200C2: {
+			d: 'M638.2 253.33L638.2 226.24L638.2 220.85L638.2 210.91L320.74 210.91L320.74 226.24L609.95 226.24L609.95 270.56L621.85 270.56L638.2 270.56L833.62 270.56L833.62 253.33L638.2 253.33Z',
+			type: 'green',
+			title: 'C200C2',
+		},
+		C200C1: {
+			d: 'M944.88 586.66L944.88 619.59L984.07 619.59L927.89 210.91L836.15 211.15L836.15 270.56L885.84 270.56L885.84 327.14L925.84 327.14L925.84 452.97L944.88 586.66Z',
+			type: 'green',
+			title: 'C200C1',
+		},
   };
 
   const nonSelectedSpots = Object.keys(dMap).filter(
@@ -86,8 +117,11 @@ export default function MH_Level1({
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.5, duration: 0.4 }}
       >
-        {nonSelectedSpots.map((id) => renderSpot(id, dMap[id], latestSpot))}
-      </motion.g>
+				{nonSelectedSpots.map((id) => {
+					const { d, type, title } = dMap[id];
+					return renderSpot(id, d, type, latestSpot, title);
+				})}		      
+			</motion.g>
 
       {/* Decorative Elements */}
       <motion.g
@@ -238,8 +272,10 @@ export default function MH_Level1({
       </motion.g>
 
       {/* Selected spot (if any) rendered last */}
-      {latestSpot &&
-        renderSpot(latestSpot, dMap[latestSpot], latestSpot)}
+			{latestSpot && dMap[latestSpot] && (() => {
+        const { d, type, title } = dMap[latestSpot];
+        return renderSpot(latestSpot, d, type, latestSpot, title);
+      })()}
     </>
   );
 }

@@ -18,7 +18,7 @@ export default function Barnum_Level0({
   latestSpot,
 }: Barnum_Level0Props) {
   const dMap: Record<string, { d: string; type: SpotType; title?: string }> = {
-		CorridorLLH0: {
+	CorridorLLH0: {
       d: 'M464.09 357.01h262.79v18.77H464.09z',
       type: 'green',
       title: 'Corridor LLH0',

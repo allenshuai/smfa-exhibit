@@ -8,7 +8,9 @@ interface MH_Level1Props {
   renderSpot: (
     id: string,
     d: string,
-    latestSpot: string | undefined
+    type: SpotType,
+    latestSpot: string | undefined,
+    title?: string
   ) => React.JSX.Element;
   latestSpot: string | undefined;
 }
@@ -17,11 +19,27 @@ export default function MH_Level1({
   renderSpot,
   latestSpot,
 }: MH_Level1Props) {
-  const dMap: Record<string, string> = {
-    C100C2: 'M331.03 209.71h462.6v24.62h-462.6z',
-    C100C3: 'M300.31 258.28h28.3v252.06h-28.3z',
-    C102: 'M205.03 337.94L197.77 461.18H297.19V338.12L205.03 337.94Z',
-    C100C8: 'M799.17 236.43h45.91v312.82h-45.91z',
+  const dMap: Record<string, { d: string; type: SpotType; title?: string }> = {
+    C100C2: {
+      d: 'M331.03 209.71h462.6v24.62h-462.6z',
+      type: 'green',
+      title: 'Corridor C100C2',
+    },
+    C100C3: {
+      d: 'M300.31 258.28h28.3v252.06h-28.3z',
+      type: 'green',
+      title: 'Corridor C100C3',
+    },
+    C102: {
+      d: 'M205.03 337.94L197.77 461.18H297.19V338.12L205.03 337.94Z',
+      type: 'green',
+      title: 'Corridor C102',
+    },
+    C100C8: {
+      d: 'M799.17 236.43h45.91v312.82h-45.91z',
+      type: 'green',
+      title: 'Corridor C100C8',
+    },
   };
 
   const nonSelectedSpots = Object.keys(dMap).filter(
@@ -74,7 +92,10 @@ export default function MH_Level1({
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.5, duration: 0.4 }}
       >
-        {nonSelectedSpots.map((id) => renderSpot(id, dMap[id], latestSpot))}
+        {nonSelectedSpots.map((id) => {
+          const { d, type, title } = dMap[id];
+          return renderSpot(id, d, type, latestSpot, title);
+        })}	      
       </motion.g>
 
       {/* Decorative Elements */}
@@ -184,8 +205,10 @@ export default function MH_Level1({
       </motion.g>
 
       {/* Selected spot (if any) rendered last */}
-      {latestSpot &&
-        renderSpot(latestSpot, dMap[latestSpot], latestSpot)}
+      {latestSpot && dMap[latestSpot] && (() => {
+        const { d, type, title } = dMap[latestSpot];
+        return renderSpot(latestSpot, d, type, latestSpot, title);
+      })()}
     </>
   );
 }
