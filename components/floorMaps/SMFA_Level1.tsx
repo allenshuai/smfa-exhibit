@@ -2,12 +2,15 @@
 
 import { motion } from 'framer-motion';
 import React from "react";
+import { SpotType } from '../data/allSpots'; 
 
 interface SMFA_Level1Props {
   renderSpot: (
     id: string,
     d: string,
-    latestSpot: string | undefined
+    type: SpotType,
+    latestSpot: string | undefined,
+    title?: string
   ) => React.JSX.Element;
   latestSpot: string | undefined;
 }
@@ -16,16 +19,44 @@ export default function SMFA_Level1({
   renderSpot,
   latestSpot,
 }: SMFA_Level1Props) {
-  const dMap: Record<string, string> = {
-    CorridorB100C1: 'M288.32 522.79h146.86v35.63H288.32z',
-    CorridorB100C2: 'M648.19 522.79h149.43v35.63H648.19z',
-    CorridorA100C3: 'M163.18 185.32h150.14v26.96H163.18z',
-    CorridorA100C2: 'M321.79 185.32h365.74v26.96H321.79z',
-    CorridorA100C5: 'M695.17 185.12h103.26v26.96H695.17z',
-    CorridorA100C1: 'M280.33 291.08h99.28v22.79H280.33z',
-    AtriumA100: 'M416.59 360.12L486.87 430.4H519.3V360.12H416.59Z',
-    B101: 'M282.16 705.86V522.79H163.18V728.03H271.74H282.16H338.23V705.86H282.16Z',
-    B105: 'M387.47 598.38V705.86H343.96V728.03H642.74V598.38H387.47Z',
+  const dMap: Record<string, { d: string; type: SpotType; title?: string }> = {
+    // CorridorB100C1: 'M288.32 522.79h146.86v35.63H288.32z',
+    // CorridorA100C3: 'M163.18 185.32h150.14v26.96H163.18z',
+		CorridorB100C2: {
+			d: 'M648.19 522.79h149.43v35.63H648.19z',
+			type: 'shared',
+			title: 'Building A Gallery BAG',
+		},
+		CorridorA100C2: {
+			d: 'M321.79 185.32h365.74v26.96H321.79z',
+			type: 'brown',
+			title: 'Corridor A100C2',
+		},
+		CorridorA100C5: {
+			d: 'M695.17 185.12h103.26v26.96H695.17z',
+			type: 'brown',
+			title: 'Corridor A100C5',
+		},
+		CorridorA100C1: {
+			d: 'M280.33 291.08h99.28v22.79H280.33z',
+			type: 'green',
+			title: 'Walter Gallery',
+		},
+		AtriumA100: {
+			d: 'M416.59 360.12L486.87 430.4H519.3V360.12H416.59Z',
+			type: 'brown',
+			title: 'Weems Atrium',
+		},
+		GrossmanGalleryB101: {
+			d: 'M282.16 705.86V522.79H163.18V728.03H271.74H282.16H338.23V705.86H282.16Z',
+			type: 'brown',
+			title: 'Grossman Gallery',
+		},
+		AndersonAuditoriumB105: {
+			d: 'M387.47 598.38V705.86H343.96V728.03H642.74V598.38H387.47Z',
+			type: 'brown',
+			title: 'Anderson Auditorium',
+		},
   };
 
   const nonSelectedSpots = Object.keys(dMap).filter(
@@ -78,7 +109,10 @@ export default function SMFA_Level1({
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.5, duration: 0.4 }}
       >
-				{nonSelectedSpots.map((id) => renderSpot(id, dMap[id], latestSpot))}
+				{nonSelectedSpots.map((id) => {
+					const { d, type, title } = dMap[id];
+					return renderSpot(id, d, type, latestSpot, title);
+				})}			
 			</motion.g>
 
 
@@ -248,8 +282,10 @@ export default function SMFA_Level1({
 
 			</motion.g>
 
-			{latestSpot &&
-        renderSpot(latestSpot, dMap[latestSpot], latestSpot)}
+			{latestSpot && dMap[latestSpot] && (() => {
+        const { d, type, title } = dMap[latestSpot];
+        return renderSpot(latestSpot, d, type, latestSpot, title);
+      })()}
     </>
   );
 }

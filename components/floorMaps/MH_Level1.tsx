@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import React from "react";
-
+import { SpotType } from '../data/allSpots'; 
 
 interface MH_Level1Props {
   renderSpot: (

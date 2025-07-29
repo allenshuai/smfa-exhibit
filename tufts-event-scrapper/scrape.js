@@ -7,8 +7,8 @@ const EVENTS_URL = `${BASE_URL}/events`;
 
 // Map readable room names to internal spot IDs
 const locationToSpotId = {
-  "Grossman Gallery": "B101",
-  "Anderson Auditorium": "B105",
+  "Grossman Gallery": "GrossmanGalleryB101",
+  "Anderson Auditorium": "AndersonAuditoriumB105",
   // "Remis Sculpture Court": "M201", // not implemented yet
   // "Aidekman Arts Center": "M202", // not implemented yet
 };

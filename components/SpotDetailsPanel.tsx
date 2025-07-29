@@ -10,6 +10,9 @@ import { specialSpots } from "../tufts-event-scrapper/specialSpots.generated";
 
 import SpecialEventCard from "./SpecialEventCard";
 import { regularSpots } from './data/regularSpots';
+import { orangeSpots } from './data/orangeSpots';
+import { brownStaticSpots } from './data/brownStaticSpots';
+
 import Image from "next/image";
 
 interface SpotDetailsPanelProps {
@@ -26,8 +29,11 @@ export default function SpotDetailsPanel({
   setLatestSpot,
 }: SpotDetailsPanelProps) {
   const spotData = latestSpot ? regularSpots[latestSpot] : undefined;
-  const [clicked, setClicked] = useState(false);
+  const orangeData = latestSpot ? orangeSpots[latestSpot] : undefined;
+  const staticBrownData = latestSpot ? brownStaticSpots[latestSpot] : undefined;
   const specialCards = latestSpot ? specialSpots[latestSpot] ?? [] : [];
+
+  const [clicked, setClicked] = useState(false);
 
   const handleAdd = () => {
     if (!latestSpot || selectedLocations.includes(latestSpot)) return;
@@ -59,7 +65,11 @@ export default function SpotDetailsPanel({
 
         {/* Header */}
         <h2 className="text-lg font-bold mb-3">
-          {specialCards.length > 0 ? "Special Occasion ONLY" : "Details & Availability"}
+          {specialCards.length > 0
+            ? "Special Occasion ONLY"
+            : orangeData
+            ? "Department-Managed Spot"
+            : "Details & Availability"}
         </h2>
 
         {/* 📌 Special Event Cards */}
@@ -73,8 +83,46 @@ export default function SpotDetailsPanel({
           </div>
         )}
 
+        {/* 🟠 Orange Spot (Department-managed) */}
+        {latestSpot && specialCards.length === 0 && orangeData && (
+          <div className="text-sm text-[#6c584c] border border-[#6c584c] bg-[#f0ead2] rounded p-4 mb-4">
+            <p className="font-semibold mb-2">{orangeData.title}</p>
+            <p className="whitespace-pre-line">{orangeData.message}</p>
+            {/* {orangeData?.message.map((line, idx) => (
+              <p key={idx} className="mb-1 whitespace-pre-line">{line}</p>
+            ))} */}
+          </div>
+        )}
+
+        {/* 🟤 Brown Spot with Manual Description */}
+        {latestSpot && specialCards.length === 0 && staticBrownData && (
+          <>
+            <p className="text-sm mb-2">
+              <strong>{staticBrownData.title}</strong>
+            </p>
+            
+            {Array.isArray(staticBrownData.description) ? (
+              <div className="text-sm space-y-1 mb-4">
+                {staticBrownData.description.map((line, idx) => (
+                  <p key={idx} className="flex items-center gap-2">
+                    {line.color && (
+                      <span
+                        className="w-2.5 h-2.5 rounded-full"
+                        style={{ backgroundColor: line.color }}
+                      ></span>
+                    )}
+                    <span>{line.text}</span>
+                  </p>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm mb-4">{staticBrownData.description}</p>
+            )}
+          </>
+        )}
+
         {/* 🟢 Regular Spot */}
-        {latestSpot && specialCards.length === 0 && (
+        {latestSpot && specialCards.length === 0 && !orangeData && !staticBrownData && (
           <>
             <p className="text-sm mb-2">
               You selected <strong>{spotData?.title || latestSpot}</strong>.

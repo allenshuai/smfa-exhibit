@@ -25,12 +25,16 @@ export default function Home() {
   const [latestSpot, setLatestSpot] = useState<string | undefined>(undefined);
 
   const handleFloorChange = (direction: 'up' | 'down') => {
-    if (selected.building !== "SMFA" && selected.building !== "Mission Hill") return;
-  
-    const availableFloors: string[] =
-      selected.building === "SMFA"
-        ? ["Basement", "Level 1", "Level 2", "Level 3"]
-        : ["Level 1", "Level 2"];
+    const buildingFloors: Record<string, string[]> = {
+      "SMFA": ["Basement", "Level 1", "Level 2", "Level 3"],
+      "Mission Hill": ["Level 1", "Level 2"],
+      "Barnum Hall": ["Level B", "Level 2"],
+      "Lane Hall": ["Level 1"],
+      "Aidekman Arts Center": ["Level 1"],
+    };
+
+    const availableFloors = buildingFloors[selected.building];
+    if (!availableFloors) return;
   
     const currentIndex = availableFloors.indexOf(selected.floor);
     const newIndex = direction === 'up' ? currentIndex + 1 : currentIndex - 1;
@@ -40,14 +44,22 @@ export default function Home() {
       setSelected(prev => ({ ...prev, floor: newFloor }));
     }
   };
-  
+
+  const hasMap = [
+    "SMFA",
+    "Mission Hill",
+    "Barnum Hall",
+    "Lane Hall",
+    "Aidekman Arts Center",
+  ].includes(selected.building);
+    
 
   return (
     <motion.main
       layout
       className="relative w-screen h-screen overflow-hidden bg-[#f0ead2]"
     >
-   <WelcomePopup />
+      <WelcomePopup />
       <InfoHeader />
 
       <div className="absolute inset-0 flex justify-center items-center h-[450px] top-[45%] -translate-y-1/2">
@@ -56,11 +68,11 @@ export default function Home() {
           <div className="flex items-start gap-6 h-[500px]">
             <BuildingFloorMenu selected={selected} setSelected={setSelected} />
 
-            {(selected.building === "SMFA" || selected.building === "Mission Hill") ? (
+            {hasMap ? (
               <div className="w-[60vw] max-w-[700px] h-full">
                 <FloorMap
                   building={selected.building}
-                  floor={selected.floor as "Basement" | "Level 1" | "Level 2" | "Level 3"}
+                  floor={selected.floor as any}
                   selectedLocations={selectedLocations}
                   setSelectedLocations={setSelectedLocations}
                   setLatestSpot={setLatestSpot}

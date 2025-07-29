@@ -9,6 +9,7 @@ const buildings = {
   "Mission Hill": ["Level 1", "Level 2"],
 };
 
+
 type Building = keyof typeof buildings;
 type Floor = string;
 

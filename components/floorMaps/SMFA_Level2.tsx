@@ -1,11 +1,14 @@
 import { motion } from 'framer-motion';
 import React from "react";
+import { SpotType } from '../data/allSpots'; 
 
 interface SMFA_Level2Props {
   renderSpot: (
     id: string,
     d: string,
-    latestSpot: string | undefined
+    type: SpotType,
+    latestSpot: string | undefined,
+    title?: string
   ) => React.JSX.Element;
   latestSpot: string | undefined;
 }
@@ -14,15 +17,39 @@ export default function SMFA_Level2({
   renderSpot,
   latestSpot,
 }: SMFA_Level2Props) {
-  const dMap: Record<string, string> = {
-	CorridorA200C4: 'M241.38,215.95h30.71v94.88h-30.71Z',
-    CorridorA200C3: 'M241.37,177.89h58.09v30.71h-58.09Z',
-    CorridorA200C2: 'M306.87,177.89h124.27v30.71h-124.27Z',
-    CorridorB200C1: 'M379.97,522.33h164.44v30.71h-164.44Z',
-    CorridorB200C2: 'M554.29,522.33h205.63v30.71h-205.63Z',
-    CorridorA200C5: 'M437.45,177.89h281.54v30.71h-281.54Z',
-    M200C1: 'M1035.57,177.89h21.92v72.08h-21.92Z',
-
+  const dMap: Record<string, { d: string; type: SpotType; title?: string }> = {
+    // CorridorA200C3: 'M241.37,177.89h58.09v30.71h-58.09Z',
+    // CorridorA200C2: 'M306.87,177.89h124.27v30.71h-124.27Z',
+		CorridorA200C4: {
+      d: 'M241.38,215.95h30.71v94.88h-30.71Z',
+      type: 'green',
+      title: 'Corridor A200C4',
+    },
+    CorridorB200C1: {
+      d: 'M379.97,522.33h164.44v30.71h-164.44Z',
+      type: 'green',
+      title: 'Corridor B200C1',
+    },
+    CorridorB200C2: {
+      d: 'M554.29,522.33h205.63v30.71h-205.63Z',
+      type: 'green',
+      title: 'Corridor B200C2',
+    },
+    CorridorA200C5: {
+      d: 'M437.45,177.89h281.54v30.71h-281.54Z',
+      type: 'orange',
+      title: 'Corridor A200C5',
+    },
+    CorridorM200C1: {
+      d: 'M1035.57,177.89h21.92v72.08h-21.92Z',
+      type: 'orange',
+      title: 'Corridor M200C1',
+    },
+		CHANGE1_GREEN: {
+			d: 'M362.93 215.14 360.39 215.14 349.18 215.14 346.65 215.14 360.46 309.89 363 309.89 374.21 309.89 376.74 309.89 362.93 215.14',
+			type: 'orange',
+			title: 'CHANGE1_GREEN',
+		},
   };
 
   const nonSelectedSpots = Object.keys(dMap).filter(
@@ -56,38 +83,37 @@ export default function SMFA_Level2({
       >
         {/* Insert your gray room paths or rects here */}
         <g id="SMFA_F2_Gray" fill="#c2c1c0">
-        <rect id="A204" x="241.37" y="79.99" width="189.77" height="93.14"><title>A204</title></rect>
-        <rect id="A206" x="437.45" y="79.99" width="90.63" height="93.14"><title>A206</title></rect>
-        <rect id="A208" x="532.57" y="79.99" width="89.59" height="93.14"><title>A208</title></rect>
-        <rect id="A210" x="626.38" y="79.99" width="92.62" height="93.14"><title>A210</title></rect>
-        <rect id="B2055" x="379.97" y="557.77" width="210.2" height="29.47"><title>B2055</title></rect>
-        <rect id="B209" x="595.96" y="557.65" width="123.03" height="166.07"><title>B209</title></rect>
-        <rect id="B211" x="723.82" y="557.65" width="111.25" height="166.07"><title>B211</title></rect>
-        <polygon id="A201" points="343.46 215.14 276.44 215.14 276.44 309.89 357.31 309.89 343.46 215.14"><title>A201</title></polygon>
-        <polygon id="A203" points="365.66 215.14 379.48 309.89 528.08 309.89 528.08 215.14 365.66 215.14"><title>A203</title></polygon>
-        <rect id="A200S1" x="141.27" y="281.13" width="94.68" height="36.47"><title>A200S1</title></rect>
-        <polygon id="A202" points="235.95 73.55 125.07 73.55 125.07 269.19 125.07 277.3 125.07 317.6 137.86 317.6 137.86 277.3 235.95 277.3 235.95 73.55"><title>A202</title></polygon>
-        <rect id="A200S22" x="749.36" y="177.89" width="85.7" height="34.51"><title>A200S22</title></rect>
-        <rect id="A200E" x="749.36" y="216.91" width="40.01" height="33.07"><title>A200E</title></rect>
-        <rect id="B200S1" x="764.72" y="522.33" width="70.34" height="30.71"><title>B200S1</title></rect>
-        <rect id="None" x="379.97" y="592.25" width="210.2" height="131.47"><title>None</title></rect>
-        <polygon id="B203" points="327.39 557.65 327.39 572.5 358.15 572.5 358.15 603.26 327.39 603.26 327.39 723.71 375.12 723.71 375.12 557.65 327.39 557.65"><title>B203</title></polygon>
-        <g id="B201">
-            <polygon points="230.66 723.71 252 723.71 262.26 723.71 304.64 723.71 304.64 636.29 304.64 612.51 304.64 603.26 230.66 603.26 230.66 723.71"><title>B201-top</title></polygon>
-            <polygon points="262.26 522.33 248.81 522.33 128.28 522.33 128.28 723.71 203.58 723.71 203.58 603.26 203.58 572.5 304.64 572.5 304.64 557.69 304.64 522.33 262.26 522.33"><title>B201-bottom</title></polygon>
-        </g>
-        <polygon id="A212" points="723.82 73.55 723.82 173.13 729.44 173.13 765.3 137.27 781.35 153.31 761.52 173.13 835.06 173.13 835.06 73.55 723.82 73.55"><title>A212</title></polygon>
-        <polygon id="A200S2" points="758.3 173.13 778.08 153.36 764.94 140.22 732.04 173.13 758.3 173.13"><title>A200S2</title></polygon>
-        <rect id="none" x="938.13" y="79.99" width="92.62" height="93.14"><title>none</title></rect>
-        <rect id="none-2" x="938.13" y="211.95" width="92.62" height="93.14"><title>none</title></rect>
-        <rect id="M200S1" x="1061.12" y="177.89" width="85.7" height="34.51"><title>M200S1</title></rect>
-        <rect id="M200E" x="1061.12" y="216.91" width="40.01" height="33.07"><title>M200E</title></rect>
-        <polygon id="A207" points="1108.1 216.84 1108.1 216.91 1103.97 216.91 1103.97 252.1 1064.25 252.1 1058.97 252.1 1035.57 252.1 1035.57 317.6 1146.82 317.6 1146.82 261.19 1146.82 216.84 1108.1 216.84"><title>A207</title></polygon>
-        <polygon id="none-3" points="1035.57 73.55 1035.57 173.13 1041.19 173.13 1077.06 137.27 1093.1 153.31 1073.28 173.13 1146.82 173.13 1146.82 73.55 1035.57 73.55"><title>none</title></polygon>
-        <polygon points="1070.06 173.13 1089.83 153.36 1076.7 140.22 1043.79 173.13 1070.06 173.13"><title>corner-deco</title></polygon>
-        <polygon id="A205" points="796.34 216.84 796.34 216.91 792.21 216.91 792.21 252.1 759.04 252.1 752.5 252.1 747.21 252.1 723.82 252.1 719 252.1 719 215.14 532.57 215.14 532.57 309.82 686.38 309.82 686.38 309.89 723.82 309.89 723.82 317.6 835.06 317.6 835.06 261.19 835.06 216.84 796.34 216.84"><title>A205</title></polygon>
-        </g>
-
+					<rect id="A204" x="241.37" y="79.99" width="189.77" height="93.14"><title>A204</title></rect>
+					<rect id="A206" x="437.45" y="79.99" width="90.63" height="93.14"><title>A206</title></rect>
+					<rect id="A208" x="532.57" y="79.99" width="89.59" height="93.14"><title>A208</title></rect>
+					<rect id="A210" x="626.38" y="79.99" width="92.62" height="93.14"><title>A210</title></rect>
+					<rect id="B2055" x="379.97" y="557.77" width="210.2" height="29.47"><title>B2055</title></rect>
+					<rect id="B209" x="595.96" y="557.65" width="123.03" height="166.07"><title>B209</title></rect>
+					<rect id="B211" x="723.82" y="557.65" width="111.25" height="166.07"><title>B211</title></rect>
+					<polygon id="A201" points="343.46 215.14 276.44 215.14 276.44 309.89 357.31 309.89 343.46 215.14"><title>A201</title></polygon>
+					<polygon id="A203" points="365.66 215.14 379.48 309.89 528.08 309.89 528.08 215.14 365.66 215.14"><title>A203</title></polygon>
+					<rect id="A200S1" x="141.27" y="281.13" width="94.68" height="36.47"><title>A200S1</title></rect>
+					<polygon id="A202" points="235.95 73.55 125.07 73.55 125.07 269.19 125.07 277.3 125.07 317.6 137.86 317.6 137.86 277.3 235.95 277.3 235.95 73.55"><title>A202</title></polygon>
+					<rect id="A200S22" x="749.36" y="177.89" width="85.7" height="34.51"><title>A200S22</title></rect>
+					<rect id="A200E" x="749.36" y="216.91" width="40.01" height="33.07"><title>A200E</title></rect>
+					<rect id="B200S1" x="764.72" y="522.33" width="70.34" height="30.71"><title>B200S1</title></rect>
+					<rect id="None" x="379.97" y="592.25" width="210.2" height="131.47"><title>None</title></rect>
+					<polygon id="B203" points="327.39 557.65 327.39 572.5 358.15 572.5 358.15 603.26 327.39 603.26 327.39 723.71 375.12 723.71 375.12 557.65 327.39 557.65"><title>B203</title></polygon>
+					<g id="B201">
+						<polygon points="230.66 723.71 252 723.71 262.26 723.71 304.64 723.71 304.64 636.29 304.64 612.51 304.64 603.26 230.66 603.26 230.66 723.71"><title>B201-top</title></polygon>
+						<polygon points="262.26 522.33 248.81 522.33 128.28 522.33 128.28 723.71 203.58 723.71 203.58 603.26 203.58 572.5 304.64 572.5 304.64 557.69 304.64 522.33 262.26 522.33"><title>B201-bottom</title></polygon>
+					</g>
+					<polygon id="A212" points="723.82 73.55 723.82 173.13 729.44 173.13 765.3 137.27 781.35 153.31 761.52 173.13 835.06 173.13 835.06 73.55 723.82 73.55"><title>A212</title></polygon>
+					<polygon id="A200S2" points="758.3 173.13 778.08 153.36 764.94 140.22 732.04 173.13 758.3 173.13"><title>A200S2</title></polygon>
+					<rect id="none" x="938.13" y="79.99" width="92.62" height="93.14"><title>none</title></rect>
+					<rect id="none-2" x="938.13" y="211.95" width="92.62" height="93.14"><title>none</title></rect>
+					<rect id="M200S1" x="1061.12" y="177.89" width="85.7" height="34.51"><title>M200S1</title></rect>
+					<rect id="M200E" x="1061.12" y="216.91" width="40.01" height="33.07"><title>M200E</title></rect>
+					<polygon id="A207" points="1108.1 216.84 1108.1 216.91 1103.97 216.91 1103.97 252.1 1064.25 252.1 1058.97 252.1 1035.57 252.1 1035.57 317.6 1146.82 317.6 1146.82 261.19 1146.82 216.84 1108.1 216.84"><title>A207</title></polygon>
+					<polygon id="none-3" points="1035.57 73.55 1035.57 173.13 1041.19 173.13 1077.06 137.27 1093.1 153.31 1073.28 173.13 1146.82 173.13 1146.82 73.55 1035.57 73.55"><title>none</title></polygon>
+					<polygon points="1070.06 173.13 1089.83 153.36 1076.7 140.22 1043.79 173.13 1070.06 173.13"><title>corner-deco</title></polygon>
+					<polygon id="A205" points="796.34 216.84 796.34 216.91 792.21 216.91 792.21 252.1 759.04 252.1 752.5 252.1 747.21 252.1 723.82 252.1 719 252.1 719 215.14 532.57 215.14 532.57 309.82 686.38 309.82 686.38 309.89 723.82 309.89 723.82 317.6 835.06 317.6 835.06 261.19 835.06 216.84 796.34 216.84"><title>A205</title></polygon>
+				</g>
 			</motion.g>
 
 			{/* Green interactive spots */}
@@ -97,7 +123,10 @@ export default function SMFA_Level2({
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.5, duration: 0.4 }}
       >
-				{nonSelectedSpots.map((id) => renderSpot(id, dMap[id], latestSpot))}
+				{nonSelectedSpots.map((id) => {
+          const { d, type, title } = dMap[id];
+          return renderSpot(id, d, type, latestSpot, title);
+        })}			
 			</motion.g>
 
 
@@ -339,8 +368,10 @@ export default function SMFA_Level2({
 
 			</motion.g>
 
-			{latestSpot &&
-        renderSpot(latestSpot, dMap[latestSpot], latestSpot)}
+			{latestSpot && dMap[latestSpot] && (() => {
+        const { d, type, title } = dMap[latestSpot];
+        return renderSpot(latestSpot, d, type, latestSpot, title);
+      })()}
     </>
   );
 }

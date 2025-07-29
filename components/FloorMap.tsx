@@ -3,14 +3,28 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronUp, ChevronDown } from 'lucide-react';
+
 import SMFA_Level1 from './floorMaps/SMFA_Level1';
 import SMFA_Level2 from './floorMaps/SMFA_Level2';
+import SMFA_Level3 from './floorMaps/SMFA_Level3';
+import SMFA_Basement from './floorMaps/SMFA_Basement';
 import MH_Level1 from './floorMaps/MH_Level1';
 import MH_Level2 from './floorMaps/MH_Level2';
+import Aidekman_Level1 from './floorMaps/Aidekman_Level1';
+import Barnum_Level0 from './floorMaps/Barnum_Level0';
+import Barnum_Level2 from './floorMaps/Barnum_Level2';
+import Lane_Level1 from './floorMaps/Lane_Level1';
 
-const floorOrder = ['Basement', 'Level 1', 'Level 2', 'Level 3'] as const;
+import type { SpotType } from './data/allSpots';
+
+const floorOrder = ['Basement', 'Level B', 'Level 1', 'Level 2', 'Level 3'] as const;
 type Floor = (typeof floorOrder)[number];
-type Building = 'SMFA' | 'Mission Hill';
+type Building =
+  | 'SMFA'
+  | 'Mission Hill'
+  | 'Barnum Hall'
+  | 'Lane Hall'
+  | 'Aidekman Arts Center';
 
 interface FloorMapProps {
   building: Building;
@@ -23,7 +37,7 @@ interface FloorMapProps {
 }
 
 function usePrevious<T>(value: T): T | undefined {
-  const ref = useRef<T | undefined>(undefined); // ✅ FIX: provide an initial value
+  const ref = useRef<T>();
   useEffect(() => {
     ref.current = value;
   }, [value]);
@@ -55,17 +69,27 @@ export default function FloorMap({
   };
 
   const renderSpot = useCallback(
-    (id: string, d: string, latestSpot: string | undefined) => {
-      const isSelected = selectedLocations.includes(id);
-      const isActive = id === latestSpot;
-      const fillColor = isSelected ? '#33cc33' : '#8cc865';
+  (
+    id: string,
+    d: string,
+    type: SpotType,
+    latestSpot: string | undefined,
+    title?: string
+  ) => {
+    const isSelected = selectedLocations.includes(id);
+    const isActive = id === latestSpot;
+
+    let fillColor = '#8cc865'; // default green
+    if (type === 'orange') fillColor = '#d4a373';
+    else if (type === 'brown') fillColor = '#6c584c';
+    else if (type === 'shared') fillColor = '#9eab71';
 
       return (
         <motion.path
           key={id}
           id={id}
           d={d}
-          fill={fillColor}
+          fill={isSelected ? '#33cc33' : fillColor}
           stroke={isActive ? '#4a4a4a' : 'none'}
           strokeWidth={isActive ? 3 : 0}
           initial={false}
@@ -74,7 +98,9 @@ export default function FloorMap({
           transition={{ type: 'spring', stiffness: 300, damping: 20 }}
           onClick={() => handleSpotClick(id)}
           className="cursor-pointer origin-center"
-        />
+        >
+          {title && <title>{title}</title>}
+        </motion.path>
       );
     },
     [selectedLocations, latestSpot]
@@ -82,35 +108,55 @@ export default function FloorMap({
 
   const renderFloor = (b: Building, f: Floor) => {
     if (b === 'SMFA') {
+      if (f === 'Basement') return <SMFA_Basement renderSpot={renderSpot} latestSpot={latestSpot} />;
       if (f === 'Level 1') return <SMFA_Level1 renderSpot={renderSpot} latestSpot={latestSpot} />;
       if (f === 'Level 2') return <SMFA_Level2 renderSpot={renderSpot} latestSpot={latestSpot} />;
+      if (f === 'Level 3') return <SMFA_Level3 renderSpot={renderSpot} latestSpot={latestSpot} />;
     }
     if (b === 'Mission Hill') {
       if (f === 'Level 1') return <MH_Level1 renderSpot={renderSpot} latestSpot={latestSpot} />;
       if (f === 'Level 2') return <MH_Level2 renderSpot={renderSpot} latestSpot={latestSpot} />;
     }
+    if (b === 'Barnum Hall') {
+      if (f === 'Level B') return <Barnum_Level0 renderSpot={renderSpot} latestSpot={latestSpot} />;
+      if (f === 'Level 2') return <Barnum_Level2 renderSpot={renderSpot} latestSpot={latestSpot} />;
+    }
+    if (b === 'Lane Hall') {
+      if (f === 'Level 1') return <Lane_Level1 renderSpot={renderSpot} latestSpot={latestSpot} />;
+    }
+    if (b === 'Aidekman Arts Center') {
+      if (f === 'Level 1') return <Aidekman_Level1 renderSpot={renderSpot} latestSpot={latestSpot} />;
+    }
     return null;
   };
+
+  // for buttons logic
+  const buildingFloors: Record<Building, Floor[]> = {
+    SMFA: ['Basement', 'Level 1', 'Level 2', 'Level 3'],
+    'Mission Hill': ['Level 1', 'Level 2'],
+    'Barnum Hall': ['Level B', 'Level 2'],
+    'Lane Hall': ['Level 1'],
+    'Aidekman Arts Center': ['Level 1'],
+  };
+
+  const currentFloors = buildingFloors[building];
+  const currentIndex = currentFloors.indexOf(floor);
+  const isUpDisabled = currentIndex >= currentFloors.length - 1;
+  const isDownDisabled = currentIndex <= 0;
 
   return (
     <div className="relative w-full h-full border border-[#6c584c] rounded overflow-hidden">
       <div className="absolute bottom-2 right-2 flex flex-col gap-1 z-10">
         <button
           onClick={() => onFloorChange('up')}
-          disabled={
-            floor === 'Level 3' ||
-            (building === 'Mission Hill' && floor === 'Level 2')
-          }
+           disabled={isUpDisabled}
           className="bg-[#6c584c] text-[#f0ead2] p-1 rounded disabled:opacity-50"
         >
           <ChevronUp size={20} />
         </button>
         <button
           onClick={() => onFloorChange('down')}
-          disabled={
-            floor === 'Basement' ||
-            (building === 'Mission Hill' && floor === 'Level 1')
-          }
+          disabled={isDownDisabled}
           className="bg-[#6c584c] text-[#f0ead2] p-1 rounded disabled:opacity-50"
         >
           <ChevronDown size={20} />

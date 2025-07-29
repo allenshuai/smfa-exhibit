@@ -8,7 +8,7 @@ export interface SpecialEventCardProps {
 }
 
 export const specialSpots: Record<string, SpecialEventCardProps[]> = {
-  "B101": [
+  "GrossmanGalleryB101": [
     {
       "title": "How do you throw a brick through the window… Public Reception",
       "dateRange": "Sep 4,  6 –  8pm",
@@ -17,7 +17,7 @@ export const specialSpots: Record<string, SpecialEventCardProps[]> = {
       "readMoreUrl": "https://artgalleries.tufts.edu/events/226-how-do-you-throw-a-brick-through-the-window-public-reception"
     }
   ],
-  "B105": [
+  "AndersonAuditoriumB105": [
     {
       "title": "How do you throw a brick through the window… Public Reception",
       "dateRange": "Sep 4,  6 –  8pm",
