@@ -13,11 +13,11 @@ const roboto = {
   fontWeight: 300,
 };
 
-const robotoBold = {
-  fontFamily: 'Roboto, sans-serif',
-  fontStyle: 'normal',
-  fontWeight: 700,
-};
+// const robotoBold = {
+//   fontFamily: 'Roboto, sans-serif',
+//   fontStyle: 'normal',
+//   fontWeight: 700,
+// };
 
 export default function WelcomeTutorialPopup() {
   const [show, setShow] = useState(false);
@@ -54,11 +54,11 @@ export default function WelcomeTutorialPopup() {
           <section className="h-[90vh] flex flex-col md:flex-row p-10 gap-6 border-b border-[#6c584c] relative">
             <div className="w-full md:w-1/2 space-y-6">
               <h1 className="text-4xl font-extrabold leading-snug">
-                <span className="block">WE KNOW you&rsquo;ve made</span>
+                <span className="block">WE KNOW you&apos;ve made</span>
                 <span className="block">so many works in the studio</span>
               </h1>
               <h2 className="text-2xl font-bold mt-4">
-                WE KNOW you&rsquo;re ready to get them out there.
+                WE KNOW you&apos;re ready to get them out there.
               </h2>
               <p className="text-lg line-through text-[#9c8f80]">Maybe the process sounds complicated</p>
               <p className="text-xl font-semibold">Well, NO MORE.</p>
@@ -108,7 +108,7 @@ export default function WelcomeTutorialPopup() {
                   onClick={handleClose}
                   className="bg-[#6c584c] text-white px-5 py-2 rounded hover:bg-[#5a4c3a]"
                 >
-                  Let&rsquo;s Go →
+                  Let&apos;s Go →
                 </button>
               </div>
             </div>
@@ -129,7 +129,7 @@ export default function WelcomeTutorialPopup() {
               <section>
                 <h3 className="text-lg font-semibold mb-2">02 — 🛒 Add to cart (up to 3)</h3>
                 <p className="text-sm mb-3">
-                  Not sure where&rsquo;s best for your piece? No problem. Add up to <strong>three spots</strong>, and we&rsquo;ll help match you with the one that fits your medium and idea.
+                  Not sure where&apos;s best for your piece? No problem. Add up to <strong>three spots</strong>, and we&apos;ll help match you with the one that fits your medium and idea.
                 </p>
                 <div className="w-full h-44 bg-[#fef6e4] border border-dashed border-[#6c584c] rounded flex items-center justify-center">
                   <span className="text-xs italic">[ pictures coming soon1!! ]</span>
@@ -139,8 +139,7 @@ export default function WelcomeTutorialPopup() {
               <section>
                 <h3 className="text-lg font-semibold mb-2">03 — 📩 Submit your form</h3>
                 <p className="text-sm mb-3">
-                  Tell us what you're working on and how you'd like to install it. Once you submit your form, we&rsquo;ll get back to you shortly.
-                </p>
+                  {`Tell us what you're working on and how you'd like to install it. Once you submit your form, we'll get back to you shortly.`}                </p>
                 <div className="w-full h-44 bg-[#fef6e4] border border-dashed border-[#6c584c] rounded flex items-center justify-center">
                   <span className="text-xs italic">[ pictures coming soon1!! ]</span>
                 </div>
