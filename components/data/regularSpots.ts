@@ -83,6 +83,16 @@ export const regularSpots: Record<
       'https://res.cloudinary.com/dlekamlwc/image/upload/v1753746101/IMG_9729_qow2yj.jpg',
     ],
   },
+      DeanSuiteTVDisplay: {
+    title: 'Dean Suite TV Display',
+    images: [
+      'https://res.cloudinary.com/dlekamlwc/image/upload/v1753826815/IMG_9787_zqxizu.jpg',
+      'https://res.cloudinary.com/dlekamlwc/image/upload/v1753826814/IMG_9785_uawzfi.jpg',
+			'https://res.cloudinary.com/dlekamlwc/image/upload/v1753826813/IMG_9786_ov0gkk.jpg',
+    ],
+  },
+
+  
   // SMFA LEVEL 3 *****************
   CorridorA300C2: {
     title: 'Corridor A300C2',
@@ -110,4 +120,21 @@ export const regularSpots: Record<
     ],
   },
 
+  // Barnum LEVEL B *****************
+  CorridorLLH0: {
+    title: 'Corridor LLH0',
+    images: [
+      'https://res.cloudinary.com/dlekamlwc/image/upload/v1753825555/IMG_9783_vyuehm.jpg',
+      'https://res.cloudinary.com/dlekamlwc/image/upload/v1753825555/IMG_9782_vnisuq.jpg',
+      'https://res.cloudinary.com/dlekamlwc/image/upload/v1753825554/IMG_9784_b91g80.jpg',
+    ],
+  },
+    CorridorLLH1: {
+    title: 'Corridor LLH0',
+    images: [
+      'https://res.cloudinary.com/dlekamlwc/image/upload/v1753825561/IMG_9779_heomi9.jpg',
+      'https://res.cloudinary.com/dlekamlwc/image/upload/v1753825562/IMG_9780_o1hqvi.jpg',
+      'https://res.cloudinary.com/dlekamlwc/image/upload/v1753825562/IMG_9781_kt2ndv.jpg',
+    ],
+  },
 };

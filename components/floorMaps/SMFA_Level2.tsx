@@ -50,6 +50,11 @@ export default function SMFA_Level2({
 			type: 'orange',
 			title: 'CHANGE1_GREEN',
 		},
+		DeanSuiteTVDisplay: {
+			d: 'M167.4 592.78h8.7v40.19h-8.7z',
+			type: 'green',
+			title: 'Dean Suite TV Display',
+		},
   };
 
   const nonSelectedSpots = Object.keys(dMap).filter(
@@ -100,8 +105,8 @@ export default function SMFA_Level2({
 					<rect id="None" x="379.97" y="592.25" width="210.2" height="131.47"><title>None</title></rect>
 					<polygon id="B203" points="327.39 557.65 327.39 572.5 358.15 572.5 358.15 603.26 327.39 603.26 327.39 723.71 375.12 723.71 375.12 557.65 327.39 557.65"><title>B203</title></polygon>
 					<g id="B201">
-						<polygon points="230.66 723.71 252 723.71 262.26 723.71 304.64 723.71 304.64 636.29 304.64 612.51 304.64 603.26 230.66 603.26 230.66 723.71"><title>B201-top</title></polygon>
-						<polygon points="262.26 522.33 248.81 522.33 128.28 522.33 128.28 723.71 203.58 723.71 203.58 603.26 203.58 572.5 304.64 572.5 304.64 557.69 304.64 522.33 262.26 522.33"><title>B201-bottom</title></polygon>
+						<polygon points="230.66 691.83 252 691.83 262.26 691.83 304.64 691.83 304.64 627.54 304.64 610.06 304.64 603.26 230.66 603.26 230.66 691.83"><title>B201-top</title></polygon>
+						<polygon points="262.26 522.33 248.81 522.33 128.28 522.33 128.28 723.71 203.58 723.71 203.58 622.42 191.34 622.42 191.34 684.16 165.1 684.16 165.1 572.5 191.34 572.5 191.34 608.97 203.58 608.97 203.58 603.26 203.58 572.5 304.64 572.5 304.64 557.69 304.64 522.33 262.26 522.33"><title>B201-bottom</title></polygon>
 					</g>
 					<polygon id="A212" points="723.82 73.55 723.82 173.13 729.44 173.13 765.3 137.27 781.35 153.31 761.52 173.13 835.06 173.13 835.06 73.55 723.82 73.55"><title>A212</title></polygon>
 					<polygon id="A200S2" points="758.3 173.13 778.08 153.36 764.94 140.22 732.04 173.13 758.3 173.13"><title>A200S2</title></polygon>
@@ -365,6 +370,10 @@ export default function SMFA_Level2({
 				{/* Top right M200 vertical path */}
 				<polyline points="767.83 126.56 767.83 43.42 1069.36 43.42 1069.36 126.56" />
 				<polyline points="1046.53 243.34 1046.53 185.76 1055.58 175.53" />
+
+				{/* CHANGE_3 - new horizontal path */}
+				<line x1="180.39" y1="615.69" x2="216.46" y2="615.69" />
+
 
 			</motion.g>
 

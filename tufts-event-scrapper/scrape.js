@@ -14,7 +14,7 @@ const locationToSpotId = {
 };
 
 // Only include spot IDs you've built frontend support for
-const implementedSpotIds = new Set(["B101", "B105"]);
+const implementedSpotIds = new Set(["GrossmanGalleryB101", "AndersonAuditoriumB105"]);
 
 async function scrapeEvents() {
   const res = await axios.get(EVENTS_URL);
