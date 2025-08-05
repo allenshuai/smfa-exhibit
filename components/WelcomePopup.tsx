@@ -12,27 +12,28 @@ import PhaseThree from './PhaseThree';
 
 export default function WelcomePopup() {
   const [show, setShow] = useState(false);
-  const [x, setX] = useState<MotionValue<string> | null>(null);
+  // const [x, setX] = useState<MotionValue<string> | null>(null);
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const phase1Ref = useRef<HTMLDivElement | null>(null);
+
+
+  const { scrollYProgress } = useScroll({
+    target: phase1Ref,
+    container: containerRef,
+    offset: ['start start', 'end start'],
+  });
 
   useEffect(() => {
     const seen = localStorage.getItem('hasSeenWelcome');
     if (!seen) setShow(true);
   }, []);
 
-  useEffect(() => {
-    if (containerRef.current && phase1Ref.current) {
-      const { scrollYProgress } = useScroll({
-        target: phase1Ref,
-        container: containerRef,
-        offset: ['start start', 'end start'],
-      });
+  const x = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
 
-      const newX = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
-      setX(newX);
-    }
+  useEffect(() => {
+    const seen = localStorage.getItem('hasSeenWelcome');
+    if (!seen) setShow(true);
   }, []);
 
   const handleClose = () => {
@@ -41,6 +42,25 @@ export default function WelcomePopup() {
   };
 
   if (!show) return null;
+  // useEffect(() => {
+  //   if (containerRef.current && phase1Ref.current) {
+  //     const { scrollYProgress } = useScroll({
+  //       target: phase1Ref,
+  //       container: containerRef,
+  //       offset: ['start start', 'end start'],
+  //     });
+
+  //     const newX = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
+  //     setX(newX);
+  //   }
+  // }, []);
+
+  // const handleClose = () => {
+  //   localStorage.setItem('hasSeenWelcome', 'true');
+  //   setShow(false);
+  // };
+
+  // if (!show) return null;
 
   return (
     <>
