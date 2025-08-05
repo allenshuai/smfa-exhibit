@@ -1,4 +1,6 @@
-// components/svg/RhinoShadow.tsx
+'use client';
+
+import { motion } from 'framer-motion';
 
 export default function RhinoShadow() {
   return (

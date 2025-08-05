@@ -1,6 +1,14 @@
+'use client';
+
+import { motion } from 'framer-motion';
+
 export default function FrameSVG() {
   return (
-    <g id="Frame">
+    <motion.g
+      id="Frame"
+      whileHover={{ scale: 1.05 }}
+      transition={{ type: 'spring', stiffness: 200 }}
+    >
       <rect
         id="Frame_out"
         x="116.84"
@@ -17,6 +25,6 @@ export default function FrameSVG() {
         height="235.06"
         fill="#fef6e4"
       />
-    </g>
+    </motion.g>
   );
 }

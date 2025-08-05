@@ -1,6 +1,14 @@
+'use client';
+
+import { motion } from 'framer-motion';
+
 export default function PoleSVG() {
   return (
-    <g id="Pole">
+    <motion.g
+      id="Pole"
+      whileHover={{ scale: 1.05 }}
+      transition={{ type: 'spring', stiffness: 180 }}
+    >
       {/* Middle rope */}
       <g id="Pole_Middle">
         <path
@@ -22,6 +30,6 @@ export default function PoleSVG() {
         <rect x="465.96" y="667.3" width="44.13" height="16.47" rx="6.04" ry="6.04" fill="#6c584c" />
         <rect x="482.1" y="530.82" width="11.86" height="144.72" rx="4.35" ry="4.35" fill="#6c584c" />
       </g>
-    </g>
+    </motion.g>
   );
 }
