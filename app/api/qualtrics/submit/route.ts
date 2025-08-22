@@ -3,6 +3,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { regularSpots } from "@/components/data/regularSpots";
 import { SPOT_TO_Q_LOCATION, QLocationLabel } from "@/components/data/spotToQLocation";
 
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
 /** ========= QIDs from your latest list-questions =========
  * DO NOT set values for DB items (QID5 intro, QID18 date note)
  */
