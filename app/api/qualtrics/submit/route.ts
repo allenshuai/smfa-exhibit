@@ -1,4 +1,3 @@
-// /app/api/qualtrics/submit/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { regularSpots } from "@/components/data/regularSpots";
 import { SPOT_TO_Q_LOCATION, QLocationLabel } from "@/components/data/spotToQLocation";
@@ -39,6 +38,22 @@ const BUILDING = {
   "smfa mission hill gallery (160 st. alphonsus)": 2,
 } as const;
 
+/** ========= Minimal Qualtrics types (enough for what we read) ========= */
+type QualtricsChoice = { Display?: string };
+type QualtricsQuestion = {
+  Answers?: { Choices?: Record<string, QualtricsChoice> };
+  Choices?: Record<string, QualtricsChoice>;
+};
+type SurveyDefinition = {
+  result?: { Questions?: Record<string, QualtricsQuestion> };
+};
+
+type QualtricsErrorShape = {
+  meta?: { error?: { errorMessage?: string } };
+  error?: { errorMessage?: string };
+  result?: { responseId?: string };
+};
+
 /** ========= Helpers ========= */
 function normalizeLabel(s: string) {
   return String(s).replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim().toLowerCase();
@@ -47,7 +62,7 @@ function normalizeLabel(s: string) {
 function mcCodeNum<T extends Record<string, number>>(val: string | undefined, table: T) {
   if (!val) return undefined;
   const normalized = normalizeLabel(val);
-  const code = (table as any)[val] ?? (table as any)[normalized];
+  const code = (table as Record<string, number>)[val] ?? (table as Record<string, number>)[normalized];
   return typeof code === "number" ? code : undefined;
 }
 
@@ -69,21 +84,22 @@ function toMMDDYYYY(s?: string) {
 }
 
 function spotIdsToTitles(ids: string[] = []) {
+  const rs = regularSpots as unknown as Record<string, { title?: string }>;
   const out: string[] = [];
   for (const id of ids.slice(0, 3)) {
-    const meta = (regularSpots as any)[id];
+    const meta = rs[id];
     out.push(meta?.title ?? id);
   }
   return out;
 }
 
 // Parse any kind of response body; echo text when not JSON
-async function parseMaybeJSON(resp: Response): Promise<{ json: any; text: string; isJSON: boolean }> {
+async function parseMaybeJSON(resp: Response): Promise<{ json: unknown; text: string; isJSON: boolean }> {
   const text = await resp.text();
   try {
-    return { json: JSON.parse(text), text, isJSON: true };
+    return { json: JSON.parse(text) as unknown, text, isJSON: true };
   } catch {
-    return { json: null as any, text, isJSON: false };
+    return { json: undefined, text, isJSON: false };
   }
 }
 
@@ -98,13 +114,16 @@ async function getLocationChoiceMap(DC: string, TOKEN: string, SURVEY_ID: string
     headers: { "X-API-TOKEN": TOKEN },
     cache: "no-store",
   });
-  const j = await r.json();
+  const j = (await r.json()) as SurveyDefinition;
+
   const locQ = j?.result?.Questions?.[Q.locations];
-  const choices = locQ?.Answers?.Choices ?? locQ?.Choices ?? {};
+  const choicesSrc = (locQ?.Answers?.Choices ?? locQ?.Choices) as Record<string, QualtricsChoice> | undefined;
   const by: Record<string, number> = {};
-  for (const [code, meta] of Object.entries<any>(choices)) {
-    const label = String(meta?.Display ?? "");
-    if (label) by[normalizeLabel(label)] = Number(code);
+  if (choicesSrc) {
+    for (const [code, meta] of Object.entries(choicesSrc)) {
+      const label = String(meta?.Display ?? "");
+      if (label) by[normalizeLabel(label)] = Number(code);
+    }
   }
   cachedLocChoices = { byLabel: by, at: Date.now() };
   return by;
@@ -138,7 +157,6 @@ export async function POST(req: NextRequest) {
   const API_TOKEN = process.env.QUALTRICS_API_TOKEN;
   const SURVEY_ID = process.env.QUALTRICS_SURVEY_ID;
 
-  // Clear, actionable env validation
   if (!DATACENTER || !API_TOKEN || !SURVEY_ID) {
     return NextResponse.json(
       {
@@ -229,19 +247,22 @@ export async function POST(req: NextRequest) {
     const locationCodes: number[] = [];
     const unmappedLabels: string[] = [];
     if (form.spots?.length) {
-      const labels = new Set<QLocationLabel>();
+      const mapExplicit = SPOT_TO_Q_LOCATION as unknown as Record<string, QLocationLabel>;
+      const rs = regularSpots as unknown as Record<string, { title?: string }>;
+      const labelSet = new Set<QLocationLabel>();
+
       for (const rawId of form.spots.slice(0, 3)) {
-        const fromExplicit =
-          SPOT_TO_Q_LOCATION[rawId as keyof typeof SPOT_TO_Q_LOCATION] as QLocationLabel | undefined;
+        const fromExplicit = mapExplicit[rawId];
         if (fromExplicit) {
-          labels.add(fromExplicit);
+          labelSet.add(fromExplicit);
         } else {
-          const meta = (regularSpots as any)[rawId];
-          if (meta?.title) labels.add(meta.title as QLocationLabel);
+          const meta = rs[rawId];
+          if (meta?.title) labelSet.add(meta.title as QLocationLabel);
         }
       }
+
       const by = await getLocationChoiceMap(DATACENTER, API_TOKEN, SURVEY_ID);
-      for (const lbl of labels) {
+      for (const lbl of labelSet) {
         const code = by[normalizeLabel(lbl)];
         if (typeof code === "number") locationCodes.push(code);
         else unmappedLabels.push(lbl);
@@ -276,11 +297,8 @@ export async function POST(req: NextRequest) {
     const parsed = await parseMaybeJSON(resp);
 
     if (!resp.ok) {
-      // Always surface the underlying error text so the UI can show it
-      const message =
-        (parsed.isJSON && (parsed.json?.meta?.error?.errorMessage || parsed.json?.error?.errorMessage)) ||
-        parsed.text ||
-        "Qualtrics request failed.";
+      const j = (parsed.json ?? {}) as QualtricsErrorShape;
+      const message = j.meta?.error?.errorMessage || j.error?.errorMessage || parsed.text || "Qualtrics request failed.";
       console.error("Qualtrics error:", { status: resp.status, message, raw: parsed.text });
       return NextResponse.json(
         { ok: false, status: resp.status, error: { message }, raw: parsed.text },
@@ -288,11 +306,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const j = (parsed.json ?? {}) as QualtricsErrorShape;
     return NextResponse.json({
       ok: true,
       message: "Your request has been submitted successfully!",
-      responseId: parsed.isJSON ? parsed.json?.result?.responseId : undefined,
-      // debug: parsed.text, // optional
+      responseId: j.result?.responseId,
     });
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : "Unknown error";
