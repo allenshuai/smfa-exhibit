@@ -269,7 +269,7 @@ export async function POST(req: NextRequest) {
     if (form.covidAgree) values[Q.covidAgree] = 1; // number
 
     // MC multi-answer: locations (QID2) → ARRAY OF STRING CODES (works with Qualtrics)
-    let locationCodes: number[] = [];
+    const locationCodes: number[] = [];
     const unmappedLabels: string[] = [];
     if (form.spots?.length) {
       const labels = spotsToQLocationLabels(form.spots);
