@@ -23,17 +23,17 @@ export default function SMFA_Level2({
 		CorridorA200C4: {
       d: 'M241.38,215.95h30.71v94.88h-30.71Z',
       type: 'green',
-      title: 'Corridor A200C4',
+      title: 'Edwin Gallery',
     },
     CorridorB200C1: {
       d: 'M379.97,522.33h164.44v30.71h-164.44Z',
       type: 'green',
-      title: 'Corridor B200C1',
+      title: 'Terrace Gallery I',
     },
     CorridorB200C2: {
       d: 'M554.29,522.33h205.63v30.71h-205.63Z',
       type: 'green',
-      title: 'Corridor B200C2',
+      title: 'Terrace Gallery II',
     },
     CorridorA200C5: {
       d: 'M437.45,177.89h281.54v30.71h-281.54Z',
@@ -53,7 +53,7 @@ export default function SMFA_Level2({
 		DeanSuiteTVDisplay: {
 			d: 'M167.4 592.78h8.7v40.19h-8.7z',
 			type: 'green',
-			title: 'Dean Suite TV Display',
+			title: 'Dean Suite Monitor',
 		},
   };
 

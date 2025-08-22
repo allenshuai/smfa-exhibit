@@ -17,25 +17,25 @@ export default function SelectedLocationsPanel({
   };
 
   return (
-    <div className="h-full flex flex-col border bg-[#6c584c] px-3 py-3 rounded text-[#f0ead2]">
+    <div className="h-full flex flex-col border bg-[#6c584c] px-3 py-3 rounded text-[#f0ead2] overflow-hidden">
       <h2 className="text-lg font-semibold mb-2">Selected Locations (max 3)</h2>
-      {selectedLocations.length === 0 ? (
-        <p className="text-sm text-gray-300 mb-4">None</p>
-      ) : (
-        <ul className="ml-1 mb-2 space-y-1">
-          {selectedLocations.map((loc) => (
-            <li
-              key={loc}
-              className="text-sm flex items-center justify-between bg-[#f0ead2] text-[#6c584c] px-2 py-1 rounded"
-            >
-              {loc}
-              <button onClick={() => handleRemove(loc)}>
-                <FiX className="ml-2 hover:text-red-600" />
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
+      
+      <div className="flex-1 min-h-0 overflow-y-auto mb-2">
+        {selectedLocations.length === 0 ? (
+          <p className="text-sm text-gray-300">None</p>
+        ) : (
+          <ul className="ml-1 space-y-1 pr-1">
+            {selectedLocations.map((loc) => (
+              <li key={loc} className="text-sm flex items-center justify-between bg-[#f0ead2] text-[#6c584c] px-2 py-1 rounded">
+                {loc}
+                <button onClick={() => handleRemove(loc)}>
+                  <FiX className="ml-2 hover:text-red-600" />
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
 
       <button
         onClick={() => {

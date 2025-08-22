@@ -22,21 +22,21 @@ export default function SMFA_Level1({
   const dMap: Record<string, { d: string; type: SpotType; title?: string }> = {
     // CorridorB100C1: 'M288.32 522.79h146.86v35.63H288.32z',
     // CorridorA100C3: 'M163.18 185.32h150.14v26.96H163.18z',
-		CorridorB100C2: {
-			d: 'M648.19 522.79h149.43v35.63H648.19z',
-			type: 'shared',
-			title: 'Building A Gallery BAG',
-		},
+		// CorridorB100C2: {
+		// 	d: 'M648.19 522.79h149.43v35.63H648.19z',
+		// 	type: 'shared',
+		// 	title: 'Building A Gallery BAG',
+		// },
 		CorridorA100C2: {
-			d: 'M321.79 185.32h365.74v26.96H321.79z',
-			type: 'brown',
-			title: 'Corridor A100C2',
+			d: 'M321.79 185.32h476.64v26.96H321.79z',
+			type: 'green',
+			title: 'Building A Gallery (BAG)',
 		},
-		CorridorA100C5: {
-			d: 'M695.17 185.12h103.26v26.96H695.17z',
-			type: 'brown',
-			title: 'Corridor A100C5',
-		},
+		// CorridorA100C5: {
+		// 	d: 'M695.17 185.12h103.26v26.96H695.17z',
+		// 	type: 'green',
+		// 	title: 'Corridor A100C5',
+		// },
 		CorridorA100C1: {
 			d: 'M280.33 291.08h99.28v22.79H280.33z',
 			type: 'green',

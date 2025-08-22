@@ -83,8 +83,8 @@ export default function Home() {
               </div>
             )}
 
-            <div className="flex flex-col w-[350px] h-full gap-4">
-              <div className="flex-1">
+            <div className="flex flex-col w-[350px] h-full gap-4 min-h-0">
+              <div className="flex-[0.60] min-h-0">
                 <SpotDetailsPanel
                   latestSpot={latestSpot}
                   selectedLocations={selectedLocations}
@@ -92,7 +92,7 @@ export default function Home() {
                   setLatestSpot={setLatestSpot}
                 />
               </div>
-              <div className="flex-1">
+              <div className="flex-[0.40] min-h-0">
                 <SelectedLocationsPanel
                   selectedLocations={selectedLocations}
                   setShowRequestForm={setShowRequestForm}

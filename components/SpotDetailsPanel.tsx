@@ -5,13 +5,15 @@ import {
   CirclePlus,
   Inbox,
   CheckCircle,
+  Info,
 } from "lucide-react";
 import { specialSpots } from "../tufts-event-scrapper/specialSpots.generated";
 
 import SpecialEventCard from "./SpecialEventCard";
-import { regularSpots } from './data/regularSpots';
-import { orangeSpots } from './data/orangeSpots';
-import { brownStaticSpots } from './data/brownStaticSpots';
+import { regularSpots } from "./data/regularSpots";
+import { orangeSpots } from "./data/orangeSpots";
+import { brownStaticSpots } from "./data/brownStaticSpots";
+import { sharedSpots } from "./data/sharedSpots";
 
 import Image from "next/image";
 
@@ -31,16 +33,25 @@ export default function SpotDetailsPanel({
   const spotData = latestSpot ? regularSpots[latestSpot] : undefined;
   const orangeData = latestSpot ? orangeSpots[latestSpot] : undefined;
   const staticBrownData = latestSpot ? brownStaticSpots[latestSpot] : undefined;
+  const sharedData = latestSpot ? sharedSpots[latestSpot] : undefined;
   const specialCards = latestSpot ? specialSpots[latestSpot] ?? [] : [];
 
   const [clicked, setClicked] = useState(false);
 
+  const isOrange = Boolean(orangeData);
+  const isBrown = Boolean(staticBrownData);
+  const isShared = Boolean(sharedData);
+
   const handleAdd = () => {
-    if (!latestSpot || selectedLocations.includes(latestSpot)) return;
+    if (!latestSpot) return;
+    if (selectedLocations.includes(latestSpot)) return;
     if (selectedLocations.length >= 3) {
       alert("You can only select up to 3 spots.");
       return;
     }
+    // Orange spots are department-managed → do not allow adding
+    if (isOrange) return;
+
     setSelectedLocations([...selectedLocations, latestSpot]);
     setClicked(true);
     setTimeout(() => setClicked(false), 200);
@@ -50,29 +61,38 @@ export default function SpotDetailsPanel({
     setLatestSpot(undefined);
   };
 
+  const canShowAddButton =
+    !!latestSpot &&
+    specialCards.length === 0 &&
+    !isOrange &&
+    !isBrown; // green or shared
+
   return (
-    <div className="relative h-full max-h-full flex flex-col border border-[#6c584c] px-3 py-3 rounded text-[#6c584c]">
-      <div className="flex-1 overflow-y-auto">
-        {/* ❌ Close Button */}
-        {latestSpot && (
-          <button
-            onClick={handleClose}
-            className="absolute top-2 right-2 text-[#6c584c] hover:text-[#4b463d]"
-          >
-            <X size={18} />
-          </button>
-        )}
+    <div className="relative h-full flex flex-col border border-[#6c584c] px-3 py-3 rounded text-[#6c584c] overflow-hidden">
+      {/* ❌ Close Button */}
+      {latestSpot && (
+        <button
+          onClick={handleClose}
+          className="absolute top-2 right-2 text-[#6c584c] hover:text-[#4b463d]"
+        >
+          <X size={18} />
+        </button>
+      )}
 
-        {/* Header */}
-        <h2 className="text-lg font-bold mb-3">
-          {specialCards.length > 0
-            ? "Special Occasion ONLY"
-            : orangeData
-            ? "Department-Managed Spot"
-            : "Details & Availability"}
-        </h2>
+      {/* Header (non-scrolling) */}
+      <h2 className="text-lg font-bold mb-3 pr-6 flex-none">
+        {specialCards.length > 0
+          ? "Special Occasion ONLY"
+          : isOrange
+          ? "Department-Managed Spot"
+          : isShared
+          ? "Shared Space — Open to Proposals"
+          : "Details & Availability"}
+      </h2>
 
-        {/* 📌 Special Event Cards */}
+      {/* Scrollable content */}
+      <div className="flex-1 min-h-0 overflow-y-auto">
+        {/* 🎟️ Special event cards */}
         {specialCards.length > 0 && (
           <div className="mt-3 -mx-3 px-3 overflow-x-auto">
             <div className="flex gap-3 w-max pr-2">
@@ -84,80 +104,120 @@ export default function SpotDetailsPanel({
         )}
 
         {/* 🟠 Orange Spot (Department-managed) */}
-        {latestSpot && specialCards.length === 0 && orangeData && (
+        {latestSpot && specialCards.length === 0 && isOrange && (
           <div className="text-sm text-[#6c584c] border border-[#6c584c] bg-[#f0ead2] rounded p-4 mb-4">
-            <p className="font-semibold mb-2">{orangeData.title}</p>
-            <p className="whitespace-pre-line">{orangeData.message}</p>
-            {/* {orangeData?.message.map((line, idx) => (
-              <p key={idx} className="mb-1 whitespace-pre-line">{line}</p>
-            ))} */}
+            <p className="font-semibold mb-2">{orangeData!.title}</p>
+            <p className="whitespace-pre-line">{orangeData!.message}</p>
           </div>
         )}
 
-        {/* 🟤 Brown Spot with Manual Description */}
-        {latestSpot && specialCards.length === 0 && staticBrownData && (
+        {/* 🟤 Brown Spot (Static info) */}
+        {latestSpot && specialCards.length === 0 && isBrown && (
           <>
             <p className="text-sm mb-2">
-              <strong>{staticBrownData.title}</strong>
+              <strong>{staticBrownData!.title}</strong>
             </p>
-            
-            {Array.isArray(staticBrownData.description) ? (
+
+            {Array.isArray(staticBrownData!.description) ? (
               <div className="text-sm space-y-1 mb-4">
-                {staticBrownData.description.map((line, idx) => (
-                  <p key={idx} className="flex items-center gap-2">
-                    {line.color && (
-                      <span
-                        className="w-2.5 h-2.5 rounded-full"
-                        style={{ backgroundColor: line.color }}
-                      ></span>
-                    )}
-                    <span>{line.text}</span>
-                  </p>
-                ))}
+                {staticBrownData!.description.map((line, idx) =>
+                  typeof line === "string" ? (
+                    <p key={idx}>{line}</p>
+                  ) : (
+                    <p key={idx} className="flex items-center gap-2">
+                      {line.color && (
+                        <span
+                          className="w-2.5 h-2.5 rounded-full"
+                          style={{ backgroundColor: line.color }}
+                        />
+                      )}
+                      <span>{line.text}</span>
+                    </p>
+                  )
+                )}
               </div>
             ) : (
-              <p className="text-sm mb-4">{staticBrownData.description}</p>
+              <p className="text-sm mb-4">{staticBrownData!.description}</p>
             )}
           </>
         )}
 
-        {/* 🟢 Regular Spot */}
-        {latestSpot && specialCards.length === 0 && !orangeData && !staticBrownData && (
-          <>
-            <p className="text-sm mb-2">
-              You selected <strong>{spotData?.title || latestSpot}</strong>.
-            </p>
-
-            {spotData?.images && spotData.images.length > 0 ? (
-              <div className="flex overflow-x-auto gap-3 mb-4 pr-2">
-                {spotData.images.map((url, idx) => (
-                  <Image
-                    key={idx}
-                    src={url}
-                    alt={`Image ${idx + 1}`}
-                    width={250}
-                    height={180}
-                    className="rounded border border-[#6c584c] flex-shrink-0"
-                  />
+        {/* 🟢 Regular or 🟣 Shared Spot */}
+        {latestSpot &&
+          specialCards.length === 0 &&
+          !isOrange &&
+          !isBrown && (
+            <>
+              <p className="text-sm mb-2 flex items-center gap-2 flex-wrap">
+                <>
+                  You selected <strong>{spotData?.title || sharedData?.title || latestSpot}</strong>
+                </>
+                {spotData?.tags?.map((tag: string) => (
+                  <span
+                    key={tag}
+                    className="inline-flex items-center px-3.5 py-1 rounded-full text-white text-[13px] leading-none shadow-sm"
+                    style={{
+                      backgroundColor:
+                        tag === "2D"
+                          ? "#1B80C4"
+                          : tag === "3D"
+                          ? "#F26344"
+                          : "#6c584c",
+                      boxShadow: "0 1px 3px rgba(0,0,0,0.25)",
+                    }}
+                  >
+                    {tag}
+                  </span>
                 ))}
-              </div>
-            ) : (
-              <div className="text-sm italic text-gray-500 mb-4">
-                More images coming soon!
-              </div>
-            )}
+              </p>
 
-            <button
-              onClick={handleAdd}
-              className={`mt-auto w-full px-4 py-2 rounded text-sm border transition-all duration-200
-                ${clicked ? "font-bold" : "font-medium"}
-                hover:outline hover:outline-[#6c584c]
-                cursor-pointer bg-[#6c584c] text-[#f0ead2]`}
-            >
-              Add
-            </button>
-          </>
-        )}
+              {/* Shared banner */}
+              {isShared && (
+                <div className="rounded-md border border-[#6c584c] bg-[#f0ead2] p-3 mb-3">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Info size={16} />
+                    <span className="text-sm font-medium">
+                      {sharedData!.priority ?? "Shared Space"}
+                    </span>
+                  </div>
+                  <p className="text-sm leading-snug">{sharedData!.message}</p>
+                </div>
+              )}
+
+              {/* Images (from regular spots, optional) */}
+              {spotData?.images && spotData.images.length > 0 ? (
+                <div className="flex overflow-x-auto gap-3 mb-4 pr-2">
+                  {spotData.images.map((url, idx) => (
+                    <Image
+                      key={idx}
+                      src={url}
+                      alt={`Image ${idx + 1}`}
+                      width={250}
+                      height={180}
+                      className="rounded border border-[#6c584c] flex-shrink-0"
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="text-sm italic text-gray-500 mb-4">
+                  Images coming soon!
+                </div>
+              )}
+
+              {/* Add button (enabled for green & shared) */}
+              {canShowAddButton && (
+                <button
+                  onClick={handleAdd}
+                  className={`mt-auto w-full px-4 py-2 rounded text-sm border transition-all duration-200
+                    ${clicked ? "font-bold" : "font-medium"}
+                    hover:outline hover:outline-[#6c584c]
+                    cursor-pointer bg-[#6c584c] text-[#f0ead2]`}
+                >
+                  Add
+                </button>
+              )}
+            </>
+          )}
 
         {/* 📝 Default Instructions */}
         {!latestSpot && (
@@ -165,7 +225,7 @@ export default function SpotDetailsPanel({
             <div className="flex items-start gap-2">
               <MapPin className="text-[#F26344]" size={16} />
               <span>
-                1) <strong>Find</strong> the available green spots
+                1) <strong>Find</strong> the available green/shared spots
               </span>
             </div>
             <div className="flex items-start gap-2">

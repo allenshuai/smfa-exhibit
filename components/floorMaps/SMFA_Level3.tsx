@@ -21,17 +21,25 @@ export default function SMFA_Level2({
 	CorridorA300C2: {
       d: 'M361.68 287.14h274.56v21.85h-274.56z',
       type: 'green',
-      title: 'Corridor A300C2',
+      title: 'Annalee Gallery I',
     },
     CorridorA300C3: {
-      d: 'M639.84 287.14h181.72v21.85h-181.72z',
-      type: 'green',
-      title: 'Corridor A300C3',
-    },
+  d: 'M639.84 287.14 639.84 308.98 722.38 308.98 722.38 290.65 783.53 290.65 783.53 308.98 821.56 308.98 821.56 287.14 639.84 287.14',
+  type: 'green',
+  title: 'Annalee Gallery II',
+},
+
+DarinGallery: {
+  d: 'M725.51 293.71h54.92v15.28h-54.92z',
+  type: 'green',
+  title: 'Darin Gallery',
+},
+
+
     CorridorA300C4: {
       d: 'M823.98 287.14h30.35v25.26h-30.35z',
       type: 'green',
-      title: 'Corridor A300C4',
+      title: 'Annalee Gallery Corner',
     },
     CorridorB300C1: {
       d: 'M471.01 506.03h120.91v25.32h-120.91z',

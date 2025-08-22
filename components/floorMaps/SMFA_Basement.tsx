@@ -27,17 +27,17 @@ export default function SMFA_Basement({
 		CorridorA000C2: {
 			d: 'M420.34,243.92h20.28v51.91h-20.28Z',
 			type: 'green',
-			title: 'Corridor A000C2',
+			title: 'Felipe Gallery',
 		},
 		CorridorB000C1: {
 			d: 'M292.07,483.61h221.52v32.02h-221.52Z',
 			type: 'green',
-			title: 'Corridor B000C1',
+			title: 'Vending Gallery I',
 		},
 		CorridorB000C2: {
 			d: 'M523.52,483.61h272.44v32.02h-272.44Z',
 			type: 'green',
-			title: 'Corridor B000C2',
+			title: 'Vending Gallery II',
 		},
 		CorridorB000C3: {
 			d: 'M292.07,593.45h377.92v14.11h-377.92Z',
@@ -52,7 +52,7 @@ export default function SMFA_Basement({
 		CorridorA000C2_2: {
 			d: 'M411.91,218.91h6.65v23.85h-6.65Z',
 			type: 'green',
-			title: 'Corridor A000C2_2',
+			title: 'Lower Mural',
 		},
 		CorridorA000C1_2: {
 			d: 'M410.93,393.16h7.63v16.38h-7.63Z',
