@@ -1,12 +1,10 @@
 // /app/api/qualtrics/submit/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { regularSpots } from "@/components/data/regularSpots";
-// import { sharedSpots } from "@/components/data/sharedSpots";
-
 import { SPOT_TO_Q_LOCATION, QLocationLabel } from "@/components/data/spotToQLocation";
 
 /** ========= QIDs from your latest list-questions =========
- * DO NOT set values for DB items (QID5 intro, QID18 date note)
+ * Do NOT set values for DB items (QID5 intro, QID18 date note)
  */
 const Q = {
   // TE (text-entry)
@@ -43,24 +41,17 @@ const INSTALL_TYPE = {
   "Class-based installation": 2,
 } as const;
 const SOLO_GROUP = { "Solo project": 1, "Group project": 2 } as const;
-// Building option 2 label in Qualtrics contains HTML; normalize before matching.
+// Building option 2 label contains HTML; normalize before matching.
 const BUILDING = {
   "smfa main campus (230 fenway)": 1,
   "smfa mission hill gallery (160 st. alphonsus)": 2,
 } as const;
-
-/** ========= Types ========= */
-type Values = Record<string, string | number | boolean | string[]>;
-type ParsedJSON = { result?: { responseId?: string } };
-type QualtricsChoices = Record<string, { Display?: string }>;
-type LocationChoiceMap = Record<string, number>;
 
 /** ========= Helpers ========= */
 function normalizeLabel(s: string) {
   return String(s).replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim().toLowerCase();
 }
 
-// Return a NUMBER MC code (Qualtrics now complaining wants numbers for singles)
 function mcCodeNum<T extends Record<string, number>>(val: string | undefined, table: T) {
   if (!val) return undefined;
   const normalized = normalizeLabel(val);
@@ -69,7 +60,7 @@ function mcCodeNum<T extends Record<string, number>>(val: string | undefined, ta
 }
 
 // TE must be posted to QID_TEXT
-function setTE(values: Values, qid: string, v?: string) {
+function setTE(values: Record<string, unknown>, qid: string, v?: string) {
   if (!qid || v == null || v === "") return;
   values[`${qid}_TEXT`] = v;
 }
@@ -88,7 +79,7 @@ function toMMDDYYYY(s?: string) {
 function spotIdsToTitles(ids: string[] = []) {
   const out: string[] = [];
   for (const id of ids.slice(0, 3)) {
-    const meta = (regularSpots as Record<string, { title?: string }>)[id];
+    const meta = (regularSpots as Record<string, { title?: string } | undefined>)[id];
     out.push(meta?.title ?? id);
   }
   return out;
@@ -98,32 +89,43 @@ function spotIdsToTitles(ids: string[] = []) {
 async function parseMaybeJSON(resp: Response): Promise<{ json: unknown | null; text: string; isJSON: boolean }> {
   const text = await resp.text();
   try {
-    const json = JSON.parse(text) as unknown;
-    return { json, text, isJSON: true };
+    return { json: JSON.parse(text) as unknown, text, isJSON: true };
   } catch {
     return { json: null, text, isJSON: false };
   }
 }
 
 /** Cache the locations choice map (label -> numeric code) */
-let cachedLocChoices: { byLabel: LocationChoiceMap; at: number } | null = null;
-async function getLocationChoiceMap(DC: string, TOKEN: string, SURVEY_ID: string): Promise<LocationChoiceMap> {
+let cachedLocChoices: { byLabel: Record<string, number>; at: number } | null = null;
+
+type SurveyDefinition = {
+  result?: {
+    Questions?: Record<
+      string,
+      {
+        Answers?: { Choices?: Record<string, { Display?: string }> };
+        Choices?: Record<string, { Display?: string }>;
+      }
+    >;
+  };
+};
+
+async function getLocationChoiceMap(DATACENTER: string, TOKEN: string, SURVEY_ID: string) {
   const FRESH_MS = 10 * 60 * 1000;
   if (cachedLocChoices && Date.now() - cachedLocChoices.at < FRESH_MS) {
     return cachedLocChoices.byLabel;
   }
-  const r = await fetch(
-    `https://${DC}.qualtrics.com/API/v3/survey-definitions/${SURVEY_ID}`,
-    { headers: { "X-API-TOKEN": TOKEN }, cache: "no-store" }
-  );
-  const j = (await r.json()) as {
-    result?: { Questions?: Record<string, { Answers?: { Choices?: QualtricsChoices }; Choices?: QualtricsChoices }> };
-  };
+  const r = await fetch(`https://${DATACENTER}/API/v3/survey-definitions/${SURVEY_ID}`, {
+    headers: { "X-API-TOKEN": TOKEN },
+    cache: "no-store",
+  });
+  const j = (await r.json()) as SurveyDefinition;
 
   const locQ = j?.result?.Questions?.[Q.locations];
-  const choices: QualtricsChoices = locQ?.Answers?.Choices ?? locQ?.Choices ?? {};
-  const by: LocationChoiceMap = {};
-  for (const [code, meta] of Object.entries(choices)) {
+  const choicesObj = locQ?.Answers?.Choices ?? locQ?.Choices ?? {};
+  const by: Record<string, number> = {};
+
+  for (const [code, meta] of Object.entries(choicesObj as Record<string, { Display?: string }>)) {
     const label = String(meta?.Display ?? "");
     if (label) by[normalizeLabel(label)] = Number(code);
   }
@@ -140,7 +142,7 @@ function spotsToQLocationLabels(spotIds: string[]): QLocationLabel[] {
       out.add(fromExplicit);
       continue;
     }
-    const meta = (regularSpots as Record<string, { title?: string }>)[rawId];
+    const meta = (regularSpots as Record<string, { title?: string } | undefined>)[rawId];
     const t = meta?.title as QLocationLabel | undefined;
     if (t) out.add(t);
   }
@@ -150,10 +152,16 @@ function spotsToQLocationLabels(spotIds: string[]): QLocationLabel[] {
 /** ========= Incoming body ========= */
 type WebForm = {
   // TE
-  name?: string; email?: string; program?: string;
-  artworkDescription?: string; installMethods?: string;
-  covidHandlingExplain?: string; durationExplain?: string; whichClass?: string;
-  preferredDateText?: string; altResponsibleName?: string;
+  name?: string;
+  email?: string;
+  program?: string;
+  artworkDescription?: string;
+  installMethods?: string;
+  covidHandlingExplain?: string;
+  durationExplain?: string;
+  whichClass?: string;
+  preferredDateText?: string;
+  altResponsibleName?: string;
 
   // MC single
   canInstallSolo?: "Yes" | "No";
@@ -170,9 +178,22 @@ type WebForm = {
 };
 
 export async function POST(req: NextRequest) {
-  const DATACENTER = process.env.QUALTRICS_DATACENTER!;
-  const API_TOKEN = process.env.QUALTRICS_API_TOKEN!;
-  const SURVEY_ID = process.env.QUALTRICS_SURVEY_ID!;
+  // ========= Normalize env (trim and strip protocol) =========
+  const RAW_DC = (process.env.QUALTRICS_DATACENTER ?? "").trim();
+  const DATACENTER = RAW_DC.replace(/^https?:\/\//i, "").replace(/\/+$/i, "").toLowerCase();
+  const API_TOKEN = (process.env.QUALTRICS_API_TOKEN ?? "").trim();
+  const SURVEY_ID = (process.env.QUALTRICS_SURVEY_ID ?? "").trim();
+
+  if (!DATACENTER || !API_TOKEN || !SURVEY_ID) {
+    return NextResponse.json(
+      {
+        ok: false,
+        error:
+          "Missing Qualtrics configuration. Please set QUALTRICS_DATACENTER, QUALTRICS_API_TOKEN, and QUALTRICS_SURVEY_ID.",
+      },
+      { status: 500 }
+    );
+  }
 
   try {
     const form: WebForm = await req.json();
@@ -202,10 +223,10 @@ export async function POST(req: NextRequest) {
     }
 
     // ---------- Build values ----------
-    const values: Values = {};
+    const values: Record<string, unknown> = {};
+    const trim = (s?: string) => (s == null ? s : s.trim());
 
     // TE (goes to QID*_TEXT)
-    const trim = (s?: string) => (s == null ? s : s.trim());
     setTE(values, Q.name, trim(form.name));
     setTE(values, Q.email, trim(form.email));
     setTE(values, Q.program, trim(form.program));
@@ -247,8 +268,8 @@ export async function POST(req: NextRequest) {
 
     if (form.covidAgree) values[Q.covidAgree] = 1; // number
 
-    // MC multi-answer: locations (QID2) → ARRAY OF STRING CODES
-    const locationCodes: number[] = [];
+    // MC multi-answer: locations (QID2) → ARRAY OF STRING CODES (works with Qualtrics)
+    let locationCodes: number[] = [];
     const unmappedLabels: string[] = [];
     if (form.spots?.length) {
       const labels = spotsToQLocationLabels(form.spots);
@@ -268,8 +289,16 @@ export async function POST(req: NextRequest) {
 
     // ---------- Top-level payload ----------
     const nowISO = new Date().toISOString();
-    const payload = {
-      responseStatus: "Complete" as const,
+    const payload: {
+      responseStatus: "Complete";
+      startDate: string;
+      endDate: string;
+      finished: boolean;
+      userLanguage: "EN";
+      displayedFields: string[];
+      values: Record<string, unknown>;
+    } = {
+      responseStatus: "Complete",
       startDate: nowISO,
       endDate: nowISO,
       finished: true,
@@ -279,14 +308,11 @@ export async function POST(req: NextRequest) {
     };
 
     // ---------- Send ----------
-    const resp = await fetch(
-      `https://${DATACENTER}.qualtrics.com/API/v3/surveys/${SURVEY_ID}/responses`,
-      {
-        method: "POST",
-        headers: { "X-API-TOKEN": API_TOKEN, "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      }
-    );
+    const resp = await fetch(`https://${DATACENTER}/API/v3/surveys/${SURVEY_ID}/responses`, {
+      method: "POST",
+      headers: { "X-API-TOKEN": API_TOKEN, "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
     const parsed = await parseMaybeJSON(resp);
 
     if (!resp.ok) {
@@ -295,7 +321,7 @@ export async function POST(req: NextRequest) {
           ok: false,
           status: resp.status,
           isJSON: parsed.isJSON,
-          error: parsed.isJSON ? (parsed.json as ParsedJSON) : { message: "Non‑JSON response from Qualtrics" },
+          error: parsed.isJSON ? parsed.json : { message: "Non‑JSON response from Qualtrics" },
           raw: parsed.text,
           debugPayload: payload,
           unmappedLabels,
@@ -304,11 +330,19 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const pj = (parsed.json as ParsedJSON) ?? {};
+    // Extract responseId if present
+    const responseId =
+      (parsed.isJSON &&
+        typeof parsed.json === "object" &&
+        parsed.json !== null &&
+        // @ts-expect-error minimal shape check
+        parsed.json.result?.responseId) ||
+      undefined;
+
     return NextResponse.json({
       ok: true,
       message: "Your request has been submitted successfully!",
-      responseId: pj.result?.responseId,
+      responseId,
       unmappedLabels,
     });
   } catch (err) {
