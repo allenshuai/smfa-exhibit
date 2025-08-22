@@ -1,6 +1,8 @@
 // /app/api/qualtrics/submit/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { regularSpots } from "@/components/data/regularSpots";
+// import { sharedSpots } from "@/components/data/sharedSpots";
+
 import { SPOT_TO_Q_LOCATION, QLocationLabel } from "@/components/data/spotToQLocation";
 
 /** ========= QIDs from your latest list-questions =========
@@ -47,6 +49,12 @@ const BUILDING = {
   "smfa mission hill gallery (160 st. alphonsus)": 2,
 } as const;
 
+/** ========= Types ========= */
+type Values = Record<string, string | number | boolean | string[]>;
+type ParsedJSON = { result?: { responseId?: string } };
+type QualtricsChoices = Record<string, { Display?: string }>;
+type LocationChoiceMap = Record<string, number>;
+
 /** ========= Helpers ========= */
 function normalizeLabel(s: string) {
   return String(s).replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim().toLowerCase();
@@ -56,12 +64,12 @@ function normalizeLabel(s: string) {
 function mcCodeNum<T extends Record<string, number>>(val: string | undefined, table: T) {
   if (!val) return undefined;
   const normalized = normalizeLabel(val);
-  const code = (table as any)[val] ?? (table as any)[normalized];
+  const code = (table as Record<string, number>)[val] ?? (table as Record<string, number>)[normalized];
   return typeof code === "number" ? code : undefined;
 }
 
 // TE must be posted to QID_TEXT
-function setTE(values: Record<string, any>, qid: string, v?: string) {
+function setTE(values: Values, qid: string, v?: string) {
   if (!qid || v == null || v === "") return;
   values[`${qid}_TEXT`] = v;
 }
@@ -70,29 +78,36 @@ function toMMDDYYYY(s?: string) {
   if (!s) return undefined;
   if (/^\d{2}-\d{2}-\d{4}$/.test(s)) return s; // already MM-DD-YYYY
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s);
-  if (m) { const [, y, mm, dd] = m; return `${mm}-${dd}-${y}`; }
+  if (m) {
+    const [, y, mm, dd] = m;
+    return `${mm}-${dd}-${y}`;
+  }
   return s;
 }
 
 function spotIdsToTitles(ids: string[] = []) {
   const out: string[] = [];
   for (const id of ids.slice(0, 3)) {
-    const meta = (regularSpots as any)[id];
+    const meta = (regularSpots as Record<string, { title?: string }>)[id];
     out.push(meta?.title ?? id);
   }
   return out;
 }
 
 /** Robust parse (Qualtrics sometimes returns non-JSON) */
-async function parseMaybeJSON(resp: Response) {
+async function parseMaybeJSON(resp: Response): Promise<{ json: unknown | null; text: string; isJSON: boolean }> {
   const text = await resp.text();
-  try { return { json: JSON.parse(text), text, isJSON: true }; }
-  catch { return { json: null, text, isJSON: false }; }
+  try {
+    const json = JSON.parse(text) as unknown;
+    return { json, text, isJSON: true };
+  } catch {
+    return { json: null, text, isJSON: false };
+  }
 }
 
 /** Cache the locations choice map (label -> numeric code) */
-let cachedLocChoices: { byLabel: Record<string, number>; at: number } | null = null;
-async function getLocationChoiceMap(DC: string, TOKEN: string, SURVEY_ID: string) {
+let cachedLocChoices: { byLabel: LocationChoiceMap; at: number } | null = null;
+async function getLocationChoiceMap(DC: string, TOKEN: string, SURVEY_ID: string): Promise<LocationChoiceMap> {
   const FRESH_MS = 10 * 60 * 1000;
   if (cachedLocChoices && Date.now() - cachedLocChoices.at < FRESH_MS) {
     return cachedLocChoices.byLabel;
@@ -101,12 +116,14 @@ async function getLocationChoiceMap(DC: string, TOKEN: string, SURVEY_ID: string
     `https://${DC}.qualtrics.com/API/v3/survey-definitions/${SURVEY_ID}`,
     { headers: { "X-API-TOKEN": TOKEN }, cache: "no-store" }
   );
-  const j = await r.json();
+  const j = (await r.json()) as {
+    result?: { Questions?: Record<string, { Answers?: { Choices?: QualtricsChoices }; Choices?: QualtricsChoices }> };
+  };
 
   const locQ = j?.result?.Questions?.[Q.locations];
-  const choices = locQ?.Answers?.Choices ?? locQ?.Choices ?? {};
-  const by: Record<string, number> = {};
-  for (const [code, meta] of Object.entries<any>(choices)) {
+  const choices: QualtricsChoices = locQ?.Answers?.Choices ?? locQ?.Choices ?? {};
+  const by: LocationChoiceMap = {};
+  for (const [code, meta] of Object.entries(choices)) {
     const label = String(meta?.Display ?? "");
     if (label) by[normalizeLabel(label)] = Number(code);
   }
@@ -119,8 +136,11 @@ function spotsToQLocationLabels(spotIds: string[]): QLocationLabel[] {
   const out = new Set<QLocationLabel>();
   for (const rawId of (spotIds ?? []).slice(0, 3)) {
     const fromExplicit = SPOT_TO_Q_LOCATION[rawId as keyof typeof SPOT_TO_Q_LOCATION] as QLocationLabel | undefined;
-    if (fromExplicit) { out.add(fromExplicit); continue; }
-    const meta = (regularSpots as any)[rawId];
+    if (fromExplicit) {
+      out.add(fromExplicit);
+      continue;
+    }
+    const meta = (regularSpots as Record<string, { title?: string }>)[rawId];
     const t = meta?.title as QLocationLabel | undefined;
     if (t) out.add(t);
   }
@@ -151,8 +171,8 @@ type WebForm = {
 
 export async function POST(req: NextRequest) {
   const DATACENTER = process.env.QUALTRICS_DATACENTER!;
-  const API_TOKEN  = process.env.QUALTRICS_API_TOKEN!;
-  const SURVEY_ID  = process.env.QUALTRICS_SURVEY_ID!;
+  const API_TOKEN = process.env.QUALTRICS_API_TOKEN!;
+  const SURVEY_ID = process.env.QUALTRICS_SURVEY_ID!;
 
   try {
     const form: WebForm = await req.json();
@@ -182,7 +202,7 @@ export async function POST(req: NextRequest) {
     }
 
     // ---------- Build values ----------
-    const values: Record<string, any> = {};
+    const values: Values = {};
 
     // TE (goes to QID*_TEXT)
     const trim = (s?: string) => (s == null ? s : s.trim());
@@ -227,9 +247,9 @@ export async function POST(req: NextRequest) {
 
     if (form.covidAgree) values[Q.covidAgree] = 1; // number
 
-    // MC multi-answer: locations (QID2) → ARRAY OF STRING CODES (this worked previously)
-    let locationCodes: number[] = [];
-    let unmappedLabels: string[] = [];
+    // MC multi-answer: locations (QID2) → ARRAY OF STRING CODES
+    const locationCodes: number[] = [];
+    const unmappedLabels: string[] = [];
     if (form.spots?.length) {
       const labels = spotsToQLocationLabels(form.spots);
       const by = await getLocationChoiceMap(DATACENTER, API_TOKEN, SURVEY_ID);
@@ -244,13 +264,12 @@ export async function POST(req: NextRequest) {
     }
 
     // ---------- Displayed fields (string[] of the QIDs we filled) ----------
-    const displayedFields: string[] = Object.keys(values)
-      .map(k => (k.endsWith("_TEXT") ? k.slice(0, -5) : k)); // base QIDs only
+    const displayedFields: string[] = Object.keys(values).map((k) => (k.endsWith("_TEXT") ? k.slice(0, -5) : k));
 
     // ---------- Top-level payload ----------
     const nowISO = new Date().toISOString();
-    const payload: any = {
-      responseStatus: "Complete",
+    const payload = {
+      responseStatus: "Complete" as const,
       startDate: nowISO,
       endDate: nowISO,
       finished: true,
@@ -276,7 +295,7 @@ export async function POST(req: NextRequest) {
           ok: false,
           status: resp.status,
           isJSON: parsed.isJSON,
-          error: parsed.isJSON ? parsed.json : { message: "Non‑JSON response from Qualtrics" },
+          error: parsed.isJSON ? (parsed.json as ParsedJSON) : { message: "Non‑JSON response from Qualtrics" },
           raw: parsed.text,
           debugPayload: payload,
           unmappedLabels,
@@ -285,16 +304,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const pj = (parsed.json as ParsedJSON) ?? {};
     return NextResponse.json({
       ok: true,
       message: "Your request has been submitted successfully!",
-      responseId: parsed.isJSON ? parsed.json?.result?.responseId : undefined,
+      responseId: pj.result?.responseId,
       unmappedLabels,
     });
-  } catch (err: any) {
-    return NextResponse.json(
-      { ok: false, error: err?.message ?? "Unknown error" },
-      { status: 500 }
-    );
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : "Unknown error";
+    return NextResponse.json({ ok: false, error: msg }, { status: 500 });
   }
 }
