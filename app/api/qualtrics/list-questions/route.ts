@@ -1,4 +1,7 @@
 // import { NextRequest, NextResponse } from "next/server";
+export async function GET() {
+  return new Response("Disabled debug endpoint", { status: 410 });
+}
 
 // const DC = process.env.QUALTRICS_DATACENTER!;
 // const TOKEN = process.env.QUALTRICS_API_TOKEN!;

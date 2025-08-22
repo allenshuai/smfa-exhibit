@@ -1,4 +1,7 @@
 //i ran with /api/qualtrics/ping to make sure taht the envs and token are good
+export async function GET() {
+  return new Response("Disabled debug endpoint", { status: 410 });
+}
 
 // import { NextResponse } from "next/server";
 
