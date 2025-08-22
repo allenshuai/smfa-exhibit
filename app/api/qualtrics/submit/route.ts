@@ -153,19 +153,18 @@ type WebForm = {
 };
 
 export async function POST(req: NextRequest) {
-  const DATACENTER = process.env.QUALTRICS_DATACENTER;
-  const API_TOKEN = process.env.QUALTRICS_API_TOKEN;
-  const SURVEY_ID = process.env.QUALTRICS_SURVEY_ID;
+  const DATACENTER = (process.env.QUALTRICS_DATACENTER ?? "").trim();
+  const API_TOKEN  = (process.env.QUALTRICS_API_TOKEN  ?? "").trim();
+  const SURVEY_ID  = (process.env.QUALTRICS_SURVEY_ID  ?? "").trim();
 
   if (!DATACENTER || !API_TOKEN || !SURVEY_ID) {
+    const missing = [
+      !DATACENTER && "QUALTRICS_DATACENTER",
+      !API_TOKEN  && "QUALTRICS_API_TOKEN",
+      !SURVEY_ID  && "QUALTRICS_SURVEY_ID",
+    ].filter(Boolean).join(", ");
     return NextResponse.json(
-      {
-        ok: false,
-        error: {
-          message:
-            "Qualtrics environment is not configured. Missing one of QUALTRICS_DATACENTER, QUALTRICS_API_TOKEN, QUALTRICS_SURVEY_ID.",
-        },
-      },
+      { ok: false, error: `Qualtrics environment is not configured. Missing: ${missing}.` },
       { status: 500 }
     );
   }
