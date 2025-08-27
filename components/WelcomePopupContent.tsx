@@ -24,15 +24,15 @@ export default function WelcomePopupContent({ onClose }: { onClose: () => void }
   const x = useTransform(scrollYProgress, [0, 1], ['0%', '100%']); // if you need it later
 
   return (
-    <div className="w-full max-w-6xl h-[80vh] bg-[#fef6e4] rounded-lg shadow-xl overflow-hidden flex flex-col relative">
+    <div className="w-full max-w-6xl h-[80vh] bg-[#fef6e4] rounded-lg shadow-xl overflow-hidden flex flex-col relative z-50">
       <button
         onClick={onClose}
-        className="absolute top-4 right-6 text-3xl text-[#6c584c] hover:text-[#3e3e3e] z-10"
+        className="absolute top-4 right-6 z-50 pointer-events-auto text-3xl text-[#6c584c] hover:text-[#3e3e3e]"
       >
         ×
       </button>
 
-      <div ref={containerRef} className="flex-1 overflow-y-scroll snap-y snap-mandatory">
+      <div ref={containerRef} className="flex-1 overflow-y-scroll snap-y snap-mandatory z-0">
         {/* Phase 1 */}
         <section
           ref={phase1Ref}
