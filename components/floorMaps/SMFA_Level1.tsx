@@ -29,7 +29,7 @@ export default function SMFA_Level1({
 		// },
 		CorridorA100C2: {
 			d: 'M321.79 185.32h476.64v26.96H321.79z',
-			type: 'green',
+			type: 'brown',
 			title: 'Building A Gallery (BAG)',
 		},
 		// CorridorA100C5: {

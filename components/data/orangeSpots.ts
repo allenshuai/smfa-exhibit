@@ -14,6 +14,7 @@ export const orangeSpots: Record<
       "Directly managed by the Photography Department. \nPlease reach out to the department for inquiries.",
   },
 
+
 // SMFA LEVEL 2 *****************
   CHANGE1_GREEN: {
     title: "CHANGE1 GREEN",

@@ -28,7 +28,7 @@ const Q = {
   installType: "QID25",
   soloOrGroupA: "QID27",
   soloOrGroupB: "QID28",
-  building: "QID8",
+  // building: "QID8",
 
   // MC single-checkbox
   covidAgree: "QID21",
@@ -197,7 +197,7 @@ export async function POST(req: NextRequest) {
     if (!form.name) missing.push("Name");
     if (!form.email) missing.push("E‑mail address");
     if (!form.program) missing.push("Program");
-    if (!form.building) missing.push("Building");
+    // if (!form.building) missing.push("Building");
     if (!form.canInstallSolo) missing.push("Can one person install?");
     if (!form.artworkDescription) missing.push("Artwork description");
     if (!form.installMethods) missing.push("Installation methods");
@@ -243,10 +243,10 @@ export async function POST(req: NextRequest) {
     const durYN = mcCodeNum(form.durationOtherYN || "No", YES_NO);
     if (durYN !== undefined) values[Q.durationOtherYN] = durYN;
 
-    if (form.building) {
-      const bCode = mcCodeNum(form.building, BUILDING);
-      if (typeof bCode === "number") values[Q.building] = bCode;
-    }
+    // if (form.building) {
+    //   const bCode = mcCodeNum(form.building, BUILDING);
+    //   if (typeof bCode === "number") values[Q.building] = bCode;
+    // }
 
     const it = mcCodeNum(form.installType, INSTALL_TYPE);
     if (it !== undefined) values[Q.installType] = it;

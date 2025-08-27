@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { regularSpots } from '@/components/data/regularSpots';
 
 interface RequestFormModalProps {
   /** Spot IDs chosen on the map (we’ll send up to 3) */
@@ -16,6 +17,8 @@ export default function RequestFormModal({
   const [submitting, setSubmitting] = useState(false);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const idToTitle = (id: string) => (regularSpots as any)[id]?.title ?? id;
+
 
   // form state mirrors ALL Qualtrics questions
   const [form, setForm] = useState({
@@ -72,7 +75,7 @@ export default function RequestFormModal({
     if (!t(form.name)) missing.push("Name");
     if (!t(form.email)) missing.push("E‑mail address");
     if (!t(form.program)) missing.push("Program");
-    if (!t(form.building)) missing.push("Building");
+    // if (!t(form.building)) missing.push("Building");
     if (!form.canInstallSolo) missing.push("Can one person install?");
     if (!t(form.artworkDescription)) missing.push("Artwork description");
     if (!t(form.installMethods)) missing.push("Installation methods");
@@ -120,7 +123,7 @@ export default function RequestFormModal({
         durationOtherYN: form.durationOtherYN || "No",            // default No
         installType: form.installType,                            // exact label
         soloOrGroup: form.soloOrGroup,                            // exact label
-        building: form.building,                                  // exact label
+        // building: form.building,                                  // exact label
 
         // MC single-checkbox
         covidAgree: form.covidAgree,
@@ -220,7 +223,7 @@ export default function RequestFormModal({
               />
 
               {/* Building (QID8) */}
-              <label className="block font-medium">Which building would you like to install in (or in which building is your class exhibition based)?</label>
+              {/* <label className="block font-medium">Which building would you like to install in (or in which building is your class exhibition based)?</label>
               <select
                 name="building"
                 value={form.building}
@@ -231,7 +234,7 @@ export default function RequestFormModal({
                 <option value="">Select One</option>
                 <option value="SMFA main campus (230 Fenway)">SMFA main campus (230 Fenway)</option>
                 <option value="SMFA Mission Hill Gallery (160 St. Alphonsus)">SMFA Mission Hill Gallery (160 St. Alphonsus)* — reserved for Graduate/Post‑Bacc & approved class shows</option>
-              </select>
+              </select> */}
 
               {/* Can install solo? (QID1) */}
               <label className="block font-medium">
@@ -465,9 +468,10 @@ export default function RequestFormModal({
                 ) : (
                   <ul className="list-disc ml-5 mt-2 text-sm text-[#6c584c]">
                     {selectedLocations.slice(0, 3).map((loc) => (
-                      <li key={loc}>{loc}</li>
+                      <li key={loc}>{idToTitle(loc)}</li>
                     ))}
                   </ul>
+
                 )}
               </div>
       
@@ -480,6 +484,7 @@ export default function RequestFormModal({
                     onClick={onClose}
                     className="text-sm px-4 py-2 border border-[#6c584c] text-[#6c584c] rounded hover:bg-[#e6dec4] cursor-pointer"
                     disabled={submitting}
+                    aria-disabled={submitting}
                   >
                     Close
                   </button>
@@ -488,6 +493,7 @@ export default function RequestFormModal({
                     onClick={handleSubmit}
                     className="bg-[#6c584c] text-[#f0ead2] px-6 py-2 rounded hover:font-bold hover:underline disabled:opacity-60 cursor-pointer"
                     disabled={submitting}
+                    aria-busy={submitting}
                   >
                     {submitting ? 'Submitting…' : 'Submit Request'}
                   </button>

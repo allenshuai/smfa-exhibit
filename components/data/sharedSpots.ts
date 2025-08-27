@@ -8,10 +8,10 @@ export const sharedSpots: Record<
   }
 > = {
   // SMFA LOWER LEVEL (Basement) ***************
-  CorridorA000C1: {
-    title: "The Well",
-    message:
-      "Prioritized for faculty shows. Open to proposals from students.",
-    priority: "Faculty-priority",
-  },
+  // CorridorA000C1: {
+  //   title: "The Well",
+  //   message:
+  //     "Prioritized for faculty shows. Open to proposals from students.",
+  //   priority: "Faculty-priority",
+  // },
 };

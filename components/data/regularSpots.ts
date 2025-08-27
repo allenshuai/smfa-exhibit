@@ -46,14 +46,14 @@ export const regularSpots: Record<string, RegularSpot> = {
     ],
     tags:['2D'],
   },
-    CorridorA000C1_2: {
-    title: 'Lowercase Gallery',
-    images: [
-      'https://res.cloudinary.com/dlekamlwc/image/upload/v1753745659/IMG_9758_l744yg.jpg',
-      'https://res.cloudinary.com/dlekamlwc/image/upload/v1753745570/IMG_9757_dn3yxj.jpg',
-    ],
-    tags:['2D'],
-  },
+  //   CorridorA000C1_2: {
+  //   title: 'Lowercase Gallery',
+  //   images: [
+  //     'https://res.cloudinary.com/dlekamlwc/image/upload/v1753745659/IMG_9758_l744yg.jpg',
+  //     'https://res.cloudinary.com/dlekamlwc/image/upload/v1753745570/IMG_9757_dn3yxj.jpg',
+  //   ],
+  //   tags:['2D'],
+  // },
 
   // SMFA LEVEL 1 *****************
     CorridorA100C1: {
@@ -65,17 +65,17 @@ export const regularSpots: Record<string, RegularSpot> = {
     ],
     tags:['2D'],
   },
-  CorridorA100C2: {
-    title: 'Building A Gallery (BAG)',
-    images: [
-      'https://res.cloudinary.com/dlekamlwc/image/upload/v1755804044/IMG_0060_cl2irf.jpg',
-      'https://res.cloudinary.com/dlekamlwc/image/upload/v1755804044/IMG_0062_sbcvid.jpg',
-      'https://res.cloudinary.com/dlekamlwc/image/upload/v1755804045/IMG_0063_evszgq.jpg',
-      'https://res.cloudinary.com/dlekamlwc/image/upload/v1755804044/IMG_0064_k0tdmq.jpg',
-      'https://res.cloudinary.com/dlekamlwc/image/upload/v1755804044/IMG_0065_lzzjl6.jpg',
-    ],
-    tags:['2D'],
-  },
+  // CorridorA100C2: {
+  //   title: 'Building A Gallery (BAG)',
+  //   images: [
+  //     'https://res.cloudinary.com/dlekamlwc/image/upload/v1755804044/IMG_0060_cl2irf.jpg',
+  //     'https://res.cloudinary.com/dlekamlwc/image/upload/v1755804044/IMG_0062_sbcvid.jpg',
+  //     'https://res.cloudinary.com/dlekamlwc/image/upload/v1755804045/IMG_0063_evszgq.jpg',
+  //     'https://res.cloudinary.com/dlekamlwc/image/upload/v1755804044/IMG_0064_k0tdmq.jpg',
+  //     'https://res.cloudinary.com/dlekamlwc/image/upload/v1755804044/IMG_0065_lzzjl6.jpg',
+  //   ],
+  //   tags:['2D'],
+  // },
 
     // BAG gallery is the adminission, all the way down
 

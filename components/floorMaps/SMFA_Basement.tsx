@@ -46,7 +46,7 @@ export default function SMFA_Basement({
 		},
 		CorridorA000C1: {
 			d: 'M390.23,426.37V480.01H447.95V426.37H439.63V412.36H390.23V426.37Z',
-			type: 'shared',
+			type: 'brown',
 			title: 'The Well',
 		},
 		CorridorA000C2_2: {
@@ -56,7 +56,7 @@ export default function SMFA_Basement({
 		},
 		CorridorA000C1_2: {
 			d: 'M410.93,393.16h7.63v16.38h-7.63Z',
-			type: 'green',
+			type: 'brown',
 			title: 'Lowercase Gallery',
 		},
   };
