@@ -5,9 +5,9 @@ import { useState } from "react";
 const buildings = {
   SMFA: ["Basement", "Level 1", "Level 2", "Level 3"],
   "Barnum Hall": ["Level B", "Level 2"],
-  "Lane Hall": ["Level 1"],
-  "Aidekman Arts Center": ["Level 1"],
-  "Mission Hill": ["Level 1", "Level 2"],
+  // "Lane Hall": ["Level 1"],
+  // "Aidekman Arts Center": ["Level 1"],
+  // "Mission Hill": ["Level 1", "Level 2"],
 } as const;
 
 type Building = keyof typeof buildings;

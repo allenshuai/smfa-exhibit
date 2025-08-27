@@ -14,10 +14,10 @@ import SelectedLocationsPanel from "@/components/SelectedLocationsPanel";
 // Define building and floor types
 const buildingFloors = {
   "SMFA": ["Basement", "Level 1", "Level 2", "Level 3"],
-  "Mission Hill": ["Level 1", "Level 2"],
+  // "Mission Hill": ["Level 1", "Level 2"],
   "Barnum Hall": ["Level B", "Level 2"],
-  "Lane Hall": ["Level 1"],
-  "Aidekman Arts Center": ["Level 1"],
+  // "Lane Hall": ["Level 1"],
+  // "Aidekman Arts Center": ["Level 1"],
 } as const;
 
 type Building = keyof typeof buildingFloors;
