@@ -134,7 +134,7 @@ export default function SpotDetailsPanel({
             <div className="flex gap-3 w-max pr-2 snap-x snap-mandatory">
               {specialCards.map((item, idx) => (
                 <div className="snap-start">
-                  <SpecialEventCard key={idx} {...item} index={idx} />
+                  <SpecialEventCard {...item} index={idx} />
                 </div>
               ))}
             </div>
