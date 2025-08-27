@@ -1,5 +1,11 @@
 import React from "react";
 import { FiX } from "react-icons/fi";
+import { regularSpots } from '@/components/data/regularSpots';
+
+type SpotMeta = { title?: string };
+const RS: Record<string, SpotMeta> = regularSpots as Record<string, SpotMeta>;
+const idToTitle = (id: string): string => RS[id]?.title ?? id;
+
 
 interface SelectedLocationsPanelProps {
   selectedLocations: string[];
@@ -26,9 +32,12 @@ export default function SelectedLocationsPanel({
         ) : (
           <ul className="ml-1 space-y-1 pr-1">
             {selectedLocations.map((loc) => (
-              <li key={loc} className="text-sm flex items-center justify-between bg-[#f0ead2] text-[#6c584c] px-2 py-1 rounded">
-                {loc}
-                <button onClick={() => handleRemove(loc)}>
+              <li
+                key={loc}
+                className="text-sm flex items-center justify-between bg-[#f0ead2] text-[#6c584c] px-2 py-1 rounded"
+              >
+                {idToTitle(loc)}
+                <button onClick={() => handleRemove(loc)} aria-label={`Remove ${idToTitle(loc)}`}>
                   <FiX className="ml-2 hover:text-red-600" />
                 </button>
               </li>
