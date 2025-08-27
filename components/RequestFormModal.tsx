@@ -17,7 +17,7 @@ export default function RequestFormModal({
   const [submitting, setSubmitting] = useState(false);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  onst idToTitle = (id: string): string =>
+  const idToTitle = (id: string): string =>
   (regularSpots as Record<string, { title?: string }>)[id]?.title ?? id;
 
   // form state mirrors ALL Qualtrics questions
