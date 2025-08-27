@@ -1,28 +1,11 @@
 // components/InfoHeader.tsx
 import Image from "next/image";
+import NoticePill from "@/components/NoticePill";
+
 
 export default function InfoHeader() {
   return (
     <div className="absolute inset-0 pointer-events-none">
-      {/* Top Right: Steps Only */}
-      {/* <div className="absolute top-6 right-6 text-sm text-right leading-tight max-w-xs pointer-events-auto text-[#6c584c] space-y-2">
-        <div className="flex items-start gap-2 justify-end">
-          <FaMapMarkerAlt className="text-orange-500" />
-          <span>1) <strong>Find</strong> the available green spots</span>
-        </div>
-        <div className="flex items-start gap-2 justify-end">
-          <FaPlusCircle className="text-blue-500" />
-          <span>2) <strong>Add</strong> it to your cart</span>
-        </div>
-        <div className="flex items-start gap-2 justify-end">
-          <FaInbox className="text-purple-500" />
-          <span>3) <strong>Request</strong> up to 3 locations</span>
-        </div>
-        <div className="flex items-start gap-2 justify-end">
-          <FaCheckCircle className="text-green-600" />
-          <span>4) <strong>Submit</strong> to be reviewed</span>
-        </div>
-      </div> */}
 
       {/* Bottom Left: Divider Line + Logo + Contact Info */}
       <div className="absolute bottom-6 left-6 text-sm text-[#6c584c]">
@@ -41,6 +24,18 @@ export default function InfoHeader() {
             <p className="font-semibold">SMFA | Student Exhibition Opportunities</p>
             <p>Contact: Kierra.Crenshaw@tufts.edu</p>
           </div>
+
+
+         <div className="flex flex-row gap-4 ml-16 pointer-events-auto">
+          <NoticePill variant="alert" size="sm">
+            Mobile version is work in progress — desktop only for now.
+          </NoticePill>
+          <NoticePill variant="info" size="sm">
+            More info about the student online features launching soon.
+          </NoticePill>
+        </div>
+
+          
         </div>
       </div>
     </div>

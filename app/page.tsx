@@ -64,7 +64,7 @@ export default function Home() {
           // ✅ Default View: Floor Map + Panels
           <div className="flex items-start gap-6 h-[500px]">
             <BuildingFloorMenu selected={selected} setSelected={setSelected} />
-
+           
             {hasMap ? (
               <div className="w-[60vw] max-w-[700px] h-full">
                 <FloorMap

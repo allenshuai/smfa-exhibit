@@ -41,10 +41,10 @@ export const brownStaticSpots: Record<
       {
         text: "Directly managed by TUAG. \nPlease reach out to them for availability.",
       },
-    //   { text: "Area & Faculty Shows (Fall)", color: "#F26344" },
-    //   { text: "Art Sale (Nov–Dec)", color: "#1B80C4" },
-    //   { text: "Area & Faculty Shows (Spring)", color: "#00B169" },
-    //   { text: "Year-End Shows (May)", color: "#F0609A" },
+      { text: "Area & Faculty Shows (Fall)", color: "#F26344" },
+      { text: "Art Sale (Nov–Dec)", color: "#1B80C4" },
+      { text: "Area & Faculty Shows (Spring)", color: "#00B169" },
+      { text: "Year-End Shows (May)", color: "#F0609A" },
     ],
 
   

@@ -70,7 +70,7 @@ export default function WelcomePopupContent({ onClose }: { onClose: () => void }
             </motion.div>
           </div>
 
-          <div className="hidden md:block absolute bottom-0 right-0 z-20 overflow-visible pointer-events-none">
+          <div className="hidden md:block absolute bottom-0 right-0 z-20 overflow-visible">
             <div className="scale-[1.4] origin-bottom-right translate-x-[15%] translate-y-[10%]">
               <svg viewBox="0 0 1300 850" className="w-[900px] h-auto">
                 <RhinoShadow />
