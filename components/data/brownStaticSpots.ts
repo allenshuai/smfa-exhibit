@@ -52,8 +52,8 @@ export const brownStaticSpots: Record<
 
     CorridorA000C1: {
     title: "The Well",
-    message:
-      "Prioritized for faculty shows. Open to proposals from students.",
+    // message:
+    //   "Prioritized for faculty shows. Open to proposals from students.",
     description: [
       {
         text: "Programmed by TUAG for the year with the following exhibitions:",
