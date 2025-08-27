@@ -68,24 +68,24 @@ export default function SpotDetailsPanel({
     !isBrown; // green or shared
 
 
-  function guardedWheel(e: React.WheelEvent<HTMLDivElement>) {
-    const el = e.currentTarget;
+  // function guardedWheel(e: React.WheelEvent<HTMLDivElement>) {
+  //   const el = e.currentTarget;
 
-    // Make vertical two-finger scroll act horizontally for carousels
-    if (Math.abs(e.deltaX) < Math.abs(e.deltaY)) {
-      el.scrollLeft += e.deltaY;
-      e.preventDefault();
-    }
+  //   // Make vertical two-finger scroll act horizontally for carousels
+  //   if (Math.abs(e.deltaX) < Math.abs(e.deltaY)) {
+  //     el.scrollLeft += e.deltaY;
+  //     e.preventDefault();
+  //   }
 
-    // Only capture the gesture if we can still scroll inside
-    const atStart = el.scrollLeft <= 0;
-    const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 1;
-    const goingLeft = (e.deltaX < 0) || (e.deltaY < 0);
-    const goingRight = (e.deltaX > 0) || (e.deltaY > 0);
-    const canScroll = (goingLeft && !atStart) || (goingRight && !atEnd);
+  //   // Only capture the gesture if we can still scroll inside
+  //   const atStart = el.scrollLeft <= 0;
+  //   const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 1;
+  //   const goingLeft = (e.deltaX < 0) || (e.deltaY < 0);
+  //   const goingRight = (e.deltaX > 0) || (e.deltaY > 0);
+  //   const canScroll = (goingLeft && !atStart) || (goingRight && !atEnd);
 
-    if (canScroll) e.stopPropagation();
-  }
+  //   if (canScroll) e.stopPropagation();
+  // }
 
   return (
     <div className="relative h-full flex flex-col border border-[#6c584c] px-3 py-3 rounded text-[#6c584c] overflow-hidden">
@@ -114,31 +114,31 @@ export default function SpotDetailsPanel({
       <div className="flex-1 min-h-0 overflow-y-auto">
         {/* 🎟️ Special event cards */}
         {specialCards.length > 0 && (
-          // <div className="mt-3 -mx-3 px-3 overflow-x-auto">
-          //   <div className="flex gap-3 w-max pr-2">
-          //     {specialCards.map((item, idx) => (
-          //       <SpecialEventCard key={idx} {...item} index={idx} />
-          //     ))}
-          //   </div>
-          // </div>
-          <div
-            className="mt-3 -mx-3 px-3 overflow-x-auto"
-            style={{
-              touchAction: "pan-x",
-              overscrollBehaviorInline: "contain",
-              WebkitOverflowScrolling: "touch",
-            }}
-            onWheel={guardedWheel}
-            onPointerDown={(e) => e.stopPropagation()}
-          >
-            <div className="flex gap-3 w-max pr-2 snap-x snap-mandatory">
+          <div className="mt-3 -mx-3 px-3 overflow-x-auto">
+            <div className="flex gap-3 w-max pr-2">
               {specialCards.map((item, idx) => (
-                <div className="snap-start">
-                  <SpecialEventCard {...item} index={idx} />
-                </div>
+                <SpecialEventCard key={idx} {...item} index={idx} />
               ))}
             </div>
           </div>
+          // <div
+          //   className="mt-3 -mx-3 px-3 overflow-x-auto"
+          //   style={{
+          //     touchAction: "pan-x",
+          //     overscrollBehaviorInline: "contain",
+          //     WebkitOverflowScrolling: "touch",
+          //   }}
+          //   onWheel={guardedWheel}
+          //   onPointerDown={(e) => e.stopPropagation()}
+          // >
+          //   <div className="flex gap-3 w-max pr-2 snap-x snap-mandatory">
+          //     {specialCards.map((item, idx) => (
+          //       <div className="snap-start">
+          //         <SpecialEventCard {...item} index={idx} />
+          //       </div>
+          //     ))}
+          //   </div>
+          // </div>
 
         )}
 
@@ -225,28 +225,7 @@ export default function SpotDetailsPanel({
 
               {/* Images (from regular spots, optional) */}
               {spotData?.images && spotData.images.length > 0 ? (
-                // <div className="flex overflow-x-auto gap-3 mb-4 pr-2">
-                //   {spotData.images.map((url, idx) => (
-                //     <Image
-                //       key={idx}
-                //       src={url}
-                //       alt={`Image ${idx + 1}`}
-                //       width={250}
-                //       height={180}
-                //       className="rounded border border-[#6c584c] flex-shrink-0"
-                //     />
-                //   ))}
-                // </div>
-                <div
-                  className="flex overflow-x-auto gap-3 mb-4 pr-2 snap-x snap-mandatory"
-                  style={{
-                    touchAction: "pan-x",
-                    overscrollBehaviorInline: "contain",
-                    WebkitOverflowScrolling: "touch",
-                  }}
-                  onWheel={guardedWheel}
-                  onPointerDown={(e) => e.stopPropagation()}
-                >
+                <div className="flex overflow-x-auto gap-3 mb-4 pr-2">
                   {spotData.images.map((url, idx) => (
                     <Image
                       key={idx}
@@ -254,10 +233,31 @@ export default function SpotDetailsPanel({
                       alt={`Image ${idx + 1}`}
                       width={250}
                       height={180}
-                      className="rounded border border-[#6c584c] flex-shrink-0 snap-start"
+                      className="rounded border border-[#6c584c] flex-shrink-0"
                     />
                   ))}
                 </div>
+                // <div
+                //   className="flex overflow-x-auto gap-3 mb-4 pr-2 snap-x snap-mandatory"
+                //   style={{
+                //     touchAction: "pan-x",
+                //     overscrollBehaviorInline: "contain",
+                //     WebkitOverflowScrolling: "touch",
+                //   }}
+                //   onWheel={guardedWheel}
+                //   onPointerDown={(e) => e.stopPropagation()}
+                // >
+                //   {spotData.images.map((url, idx) => (
+                //     <Image
+                //       key={idx}
+                //       src={url}
+                //       alt={`Image ${idx + 1}`}
+                //       width={250}
+                //       height={180}
+                //       className="rounded border border-[#6c584c] flex-shrink-0 snap-start"
+                //     />
+                //   ))}
+                // </div>
 
               ) : (
                 <div className="text-sm italic text-gray-500 mb-4">
